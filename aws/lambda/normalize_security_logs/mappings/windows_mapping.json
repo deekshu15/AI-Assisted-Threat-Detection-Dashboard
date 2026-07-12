@@ -1,0 +1,12 @@
+{
+    "event_id": "EventRecordID",
+    "timestamp": "SystemTime",
+    "hostname": "Computer",
+    "username": "User",
+    "src_ip": "SourceIp",
+    "dst_ip": "DestinationIp",
+    "protocol": "Protocol",
+    "event_type": "EventID",
+    "severity": "Level",
+    "raw_message": "{Event_NS}EventXML"
+}

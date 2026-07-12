@@ -1,0 +1,49 @@
+openapi: 3.0.1
+
+info:
+  title: AI Assisted Threat Detection API
+  version: "1.0"
+
+paths:
+
+  /logs/windows:
+    post:
+      summary: Ingest Windows Security Logs
+      responses:
+        '200':
+          description: Accepted
+
+  /logs/linux:
+    post:
+      summary: Ingest Linux Logs
+      responses:
+        '200':
+          description: Accepted
+
+  /logs/ids:
+    post:
+      summary: Ingest IDS Logs
+      responses:
+        '200':
+          description: Accepted
+
+  /logs/firewall:
+    post:
+      summary: Ingest Firewall Logs
+      responses:
+        '200':
+          description: Accepted
+
+  /intel/cve:
+    post:
+      summary: Ingest CVE Records
+      responses:
+        '200':
+          description: Accepted
+
+  /intel/threat-feed:
+    post:
+      summary: Ingest Threat Feed
+      responses:
+        '200':
+          description: Accepted
