@@ -1,90 +1,72 @@
 import {
-Paper,
-Table,
-TableBody,
-TableCell,
-TableContainer,
-TableHead,
-TableRow,
-Chip
+  Avatar,
+  Chip,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
 } from "@mui/material";
 
-import DashboardWidget from "../../dashboard/components/DashboardWidget";
+import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
 
-import { IntelligenceService } from "../services/intelligenceService";
+import { DashboardWidget } from "../../../components/ui/DashboardWidget";
 
-function LatestCVEs(){
+import { latestCVEs } from "../data/intelligenceMock";
 
-const cves=IntelligenceService.getCVEs();
-
-return(
-
-<DashboardWidget title="Latest CVEs">
-
-<TableContainer component={Paper}>
-
-<Table>
-
-<TableHead>
-
-<TableRow>
-
-<TableCell>CVE</TableCell>
-
-<TableCell>Severity</TableCell>
-
-</TableRow>
-
-</TableHead>
-
-<TableBody>
-
-{
-
-cves.map(cve=>(
-
-<TableRow key={cve.id}>
-
-<TableCell>
-
-{cve.cve}
-
-</TableCell>
-
-<TableCell>
-
-<Chip
-
-label={cve.severity}
-
-color={
-cve.severity==="Critical"
-?"error"
-:cve.severity==="High"
-?"warning"
-:"info"
+function getColor(
+  severity: string
+): "success" | "warning" | "error" {
+  switch (severity) {
+    case "Critical":
+      return "error";
+    case "High":
+      return "warning";
+    default:
+      return "success";
+  }
 }
 
-/>
+function LatestCVEs() {
+  return (
+    <DashboardWidget
+      title="Latest CVEs"
+      subtitle="Newest published vulnerabilities"
+      height={440}
+    >
+      <List disablePadding>
+        {latestCVEs.map((cve) => (
+          <ListItem
+            key={cve.id}
+            divider
+            disablePadding
+            sx={{ py: 2 }}
+          >
+            <ListItemAvatar>
+              <Avatar
+                sx={{
+                  bgcolor: "#FEE2E2",
+                  color: "#DC2626",
+                }}
+              >
+                <BugReportRoundedIcon />
+              </Avatar>
+            </ListItemAvatar>
 
-</TableCell>
+            <ListItemText
+              primary={cve.id}
+              secondary={cve.description}
+            />
 
-</TableRow>
-
-))
-
-}
-
-</TableBody>
-
-</Table>
-
-</TableContainer>
-
-</DashboardWidget>
-
-);
-
+            <Chip
+              label={cve.severity}
+              color={getColor(cve.severity)}
+              size="small"
+            />
+          </ListItem>
+        ))}
+      </List>
+    </DashboardWidget>
+  );
 }
 
 export default LatestCVEs;

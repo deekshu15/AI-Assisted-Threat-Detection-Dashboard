@@ -1,11 +1,35 @@
-export interface ThreatTrendPoint {
+export interface ExecutiveMetric {
+  title: string;
+  value: string;
+  trend: number;
+}
+
+export interface ThreatTrendData {
   month: string;
   threats: number;
 }
 
-export interface ModelMetric {
+export interface RiskTrendData {
+  month: string;
+  risk: number;
+}
+
+export interface AttackCategory {
+  category: string;
+  count: number;
+}
+
+export interface SourceAnalysis {
+  source: string;
+  events: number;
+}
+
+export interface ModelPerformance {
   model: string;
-  precision: number;
-  recall: number;
-  f1Score: number;
+  accuracy: number;
+}
+
+export interface MitreCoverage {
+  tactic: string;
+  coverage: number;
 }

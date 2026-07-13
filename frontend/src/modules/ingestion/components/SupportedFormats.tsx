@@ -1,33 +1,44 @@
+import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
+
 import {
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
+  Chip,
+  Stack,
 } from "@mui/material";
 
-import DashboardWidget from "../../dashboard/components/DashboardWidget";
+import DashboardWidget from "../../../components/ui/DashboardWidget/DashboardWidget";
 
 const formats = [
-  "CSV",
-  "JSON",
-  "EVTX",
-  "Parquet",
+  ".csv",
+  ".json",
+  ".evtx",
+  ".txt",
+  ".log",
+  ".xml",
 ];
 
 function SupportedFormats() {
   return (
-    <DashboardWidget title="Supported Formats">
-      <Typography mb={2}>
-        Accepted upload types
-      </Typography>
-
-      <List>
+    <DashboardWidget
+      title="Supported Formats"
+      subtitle="Accepted log file types"
+      height={220}
+    >
+      <Stack
+        direction="row"
+        spacing={2}
+        flexWrap="wrap"
+        useFlexGap
+      >
         {formats.map((format) => (
-          <ListItem key={format}>
-            <ListItemText primary={format} />
-          </ListItem>
+          <Chip
+            key={format}
+            icon={<InsertDriveFileRoundedIcon />}
+            label={format}
+            color="primary"
+            variant="outlined"
+          />
         ))}
-      </List>
+      </Stack>
     </DashboardWidget>
   );
 }

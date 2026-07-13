@@ -1,28 +1,85 @@
-import { Box, Grid } from "@mui/material";
+import Grid from "@mui/material/Grid";
 
-import { PageHeader } from "../../components/ui/page-header";
+import PageHeader from "../../components/ui/PageHeader/PageHeader";
 
+import ExecutiveSummary from "./components/ExecutiveSummary";
 import ThreatTrend from "./components/ThreatTrend";
+import RiskTrend from "./components/RiskTrend";
+import AttackCategoryChart from "./components/AttackCategoryChart";
+import SourceAnalysis from "./components/SourceAnalysis";
 import ModelPerformance from "./components/ModelPerformance";
+import MitreCoverage from "./components/MitreCoverage";
 
 function AnalyticsPage() {
   return (
-    <Box>
+    <>
       <PageHeader
-        title="Analytics"
-        subtitle="Security trends and AI model performance."
+        title="Security Analytics"
+        subtitle="Executive cybersecurity analytics, AI performance, and strategic threat intelligence insights."
       />
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, lg: 8 }}>
+      <ExecutiveSummary />
+
+      <Grid
+        container
+        spacing={3}
+        mt={1}
+      >
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
           <ThreatTrend />
         </Grid>
 
-        <Grid size={{ xs: 12, lg: 4 }}>
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
+          <RiskTrend />
+        </Grid>
+
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
+          <AttackCategoryChart />
+        </Grid>
+
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
+          <SourceAnalysis />
+        </Grid>
+
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
           <ModelPerformance />
         </Grid>
+
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
+          <MitreCoverage />
+        </Grid>
       </Grid>
-    </Box>
+    </>
   );
 }
 

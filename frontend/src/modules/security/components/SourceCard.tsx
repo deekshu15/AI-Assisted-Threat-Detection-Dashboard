@@ -1,83 +1,131 @@
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import ErrorRoundedIcon from "@mui/icons-material/ErrorRounded";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+
 import {
-Card,
-CardContent,
-Typography,
-Chip,
-Stack
+  Avatar,
+  Box,
+  Chip,
+  LinearProgress,
+  Stack,
+  Typography,
 } from "@mui/material";
 
+import DashboardWidget from "../../../components/ui/DashboardWidget/DashboardWidget";
 import { SecuritySource } from "../types/security";
 
-interface Props{
-
-source:SecuritySource;
-
+interface Props {
+  source: SecuritySource;
 }
 
-function SourceCard({source}:Props){
+function SourceCard({ source }: Props) {
+  const getStatusColor = () => {
+    switch (source.status) {
+      case "Healthy":
+        return "success";
 
-return(
+      case "Warning":
+        return "warning";
 
-<Card>
+      case "Critical":
+        return "error";
 
-<CardContent>
+      default:
+        return "default";
+    }
+  };
 
-<Stack spacing={2}>
+  const getStatusIcon = () => {
+    switch (source.status) {
+      case "Healthy":
+        return <CheckCircleRoundedIcon />;
 
-<Typography variant="h6">
+      case "Warning":
+        return <WarningAmberRoundedIcon />;
 
-{source.name}
+      case "Critical":
+        return <ErrorRoundedIcon />;
 
-</Typography>
+      default:
+        return <CheckCircleRoundedIcon />;
+    }
+  };
 
-<Chip
+  return (
+    <DashboardWidget
+      title={source.name}
+      subtitle={source.type}
+      height={260}
+    >
+      <Stack spacing={3}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Avatar
+            sx={{
+              bgcolor: "#E0F2FE",
+              color: "#0284C7",
+              width: 56,
+              height: 56,
+            }}
+          >
+            {getStatusIcon()}
+          </Avatar>
 
-label={source.status}
+          <Chip
+            label={source.status}
+            color={getStatusColor()}
+          />
+        </Stack>
 
-color="success"
+        <Box>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+          >
+            Events Today
+          </Typography>
 
-/>
+          <Typography
+            variant="h4"
+            fontWeight={700}
+          >
+            {source.eventsToday.toLocaleString()}
+          </Typography>
+        </Box>
 
-<Typography>
+        <Box>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            mb={1}
+          >
+            <Typography variant="body2">
+              Source Health
+            </Typography>
 
-Events
+            <Typography
+              color="primary"
+              fontWeight={600}
+            >
+              {source.health}%
+            </Typography>
+          </Stack>
 
-</Typography>
-
-<Typography variant="h5">
-
-{source.events.toLocaleString()}
-
-</Typography>
-
-<Typography>
-
-Latest Threat
-
-</Typography>
-
-<Typography color="error">
-
-{source.latestThreat}
-
-</Typography>
-
-<Typography
-variant="caption"
->
-
-{source.lastSync}
-
-</Typography>
-
-</Stack>
-
-</CardContent>
-
-</Card>
-
-);
-
+          <LinearProgress
+            variant="determinate"
+            value={source.health}
+            sx={{
+              height: 8,
+              borderRadius: 8,
+            }}
+          />
+        </Box>
+      </Stack>
+    </DashboardWidget>
+  );
 }
 
 export default SourceCard;

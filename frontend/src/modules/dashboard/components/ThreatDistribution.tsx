@@ -1,53 +1,77 @@
 import {
-  PieChart,
-  Pie,
   Cell,
+  Legend,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
 
-import { Typography } from "@mui/material";
+import DashboardWidget from "../../../components/ui/DashboardWidget/DashboardWidget";
 
-import { DashboardCard } from "../../../components/ui/card";
-
-import { DashboardService } from "../services/dashboardService";
+const distribution = [
+  {
+    name: "Malware",
+    value: 34,
+  },
+  {
+    name: "Brute Force",
+    value: 21,
+  },
+  {
+    name: "Phishing",
+    value: 17,
+  },
+  {
+    name: "DDoS",
+    value: 15,
+  },
+  {
+    name: "Insider",
+    value: 13,
+  },
+];
 
 const COLORS = [
-  "#3B82F6",
-  "#10B981",
+  "#1D4ED8",
+  "#0EA5E9",
+  "#60A5FA",
   "#F59E0B",
-  "#EF4444",
-  "#8B5CF6",
+  "#DC2626",
 ];
 
 function ThreatDistribution() {
-  const data = DashboardService.getThreatDistribution();
-
   return (
-    <DashboardCard>
-      <Typography variant="h6" mb={2}>
-        Threat Distribution
-      </Typography>
-
-      <ResponsiveContainer width="100%" height={300}>
+    <DashboardWidget
+      title="Threat Distribution"
+      subtitle="Detected attack categories"
+      height={380}
+    >
+      <ResponsiveContainer
+        width="100%"
+        height="100%"
+      >
         <PieChart>
           <Pie
-            data={data}
+            data={distribution}
             dataKey="value"
-            outerRadius={90}
+            nameKey="name"
+            outerRadius={110}
           >
-            {data.map((_, index) => (
+            {distribution.map((_, index) => (
               <Cell
                 key={index}
-                fill={COLORS[index % COLORS.length]}
+                fill={COLORS[index]}
               />
             ))}
           </Pie>
 
           <Tooltip />
+
+          <Legend />
         </PieChart>
       </ResponsiveContainer>
-    </DashboardCard>
+    </DashboardWidget>
   );
 }
 

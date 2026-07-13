@@ -1,32 +1,44 @@
 import {
-  LineChart,
-  Line,
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 
-import DashboardWidget from "../../dashboard/components/DashboardWidget";
+import { DashboardWidget } from "../../../components/ui/DashboardWidget";
 
-import { AnalyticsService } from "../services/analyticsService";
+import { threatTrend } from "../data/analyticsMock";
 
 function ThreatTrend() {
-  const data = AnalyticsService.getThreatTrend();
-
   return (
-    <DashboardWidget title="Threat Trend">
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
+    <DashboardWidget
+      title="Threat Trend"
+      subtitle="Detected threats over time"
+      height={430}
+    >
+      <ResponsiveContainer
+        width="100%"
+        height="100%"
+      >
+        <AreaChart data={threatTrend}>
+          <CartesianGrid strokeDasharray="3 3" />
+
           <XAxis dataKey="month" />
+
           <YAxis />
+
           <Tooltip />
-          <Line
+
+          <Area
+            type="monotone"
             dataKey="threats"
-            stroke="#2563EB"
-            strokeWidth={3}
+            stroke="#1D4ED8"
+            fill="#BFDBFE"
           />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </DashboardWidget>
   );

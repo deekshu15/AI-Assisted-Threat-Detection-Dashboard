@@ -1,43 +1,95 @@
 import {
+  Chip,
   Paper,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
+  Typography,
 } from "@mui/material";
 
-import DashboardWidget from "../../dashboard/components/DashboardWidget";
-import { SIEMService } from "../services/siemService";
+import { DashboardWidget } from "../../../components/ui/DashboardWidget";
+
+import { liveEvents } from "../data/siemMock";
+
+function getColor(
+  severity: string
+): "success" | "warning" | "error" {
+  switch (severity) {
+    case "Critical":
+      return "error";
+
+    case "High":
+      return "warning";
+
+    default:
+      return "success";
+  }
+}
 
 function EventExplorer() {
-  const events = SIEMService.getEvents();
-
   return (
-    <DashboardWidget title="Event Explorer" height={450}>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Time</TableCell>
-            <TableCell>Source</TableCell>
-            <TableCell>Event</TableCell>
-            <TableCell>Severity</TableCell>
-            <TableCell>Status</TableCell>
-          </TableRow>
-        </TableHead>
+    <DashboardWidget
+      title="Event Explorer"
+      subtitle="Searchable event timeline"
+      height={500}
+    >
+      <TableContainer component={Paper} elevation={0}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <Typography fontWeight={700}>
+                  Time
+                </Typography>
+              </TableCell>
 
-        <TableBody>
-          {events.map((event) => (
-            <TableRow key={event.id}>
-              <TableCell>{event.timestamp}</TableCell>
-              <TableCell>{event.source}</TableCell>
-              <TableCell>{event.event}</TableCell>
-              <TableCell>{event.severity}</TableCell>
-              <TableCell>{event.status}</TableCell>
+              <TableCell>
+                <Typography fontWeight={700}>
+                  Source
+                </Typography>
+              </TableCell>
+
+              <TableCell>
+                <Typography fontWeight={700}>
+                  Event
+                </Typography>
+              </TableCell>
+
+              <TableCell align="right">
+                <Typography fontWeight={700}>
+                  Severity
+                </Typography>
+              </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+
+          <TableBody>
+            {liveEvents.map((event) => (
+              <TableRow
+                key={event.id}
+                hover
+              >
+                <TableCell>{event.timestamp}</TableCell>
+
+                <TableCell>{event.source}</TableCell>
+
+                <TableCell>{event.message}</TableCell>
+
+                <TableCell align="right">
+                  <Chip
+                    size="small"
+                    color={getColor(event.severity)}
+                    label={event.severity}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </DashboardWidget>
   );
 }

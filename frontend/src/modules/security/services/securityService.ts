@@ -1,11 +1,21 @@
-import { securitySources } from "../data/securityMock";
+import {
+  securityEvents,
+  securitySources,
+} from "../data/securityMock";
 
-export const SecurityService={
+const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
-getSources(){
-
+export const securityService = {
+  async getSources() {
+    await delay(400);
     return securitySources;
+  },
 
-}
+  async getRecentEvents() {
+    await delay(400);
+    return securityEvents;
+  },
+};
 
-}
+export default securityService;

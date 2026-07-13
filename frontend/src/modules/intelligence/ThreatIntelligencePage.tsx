@@ -1,44 +1,51 @@
-import { Box, Grid } from "@mui/material";
+import Grid from "@mui/material/Grid";
 
-import { PageHeader } from "../../components/ui/page-header";
+import PageHeader from "../../components/ui/PageHeader/PageHeader";
 
+import ThreatFeedSummary from "./components/ThreatFeedSummary";
+import ThreatFeedStatus from "./components/ThreatFeedStatus";
 import LatestCVEs from "./components/LatestCVEs";
+import IOCList from "./components/IOCList";
+import MalwareFamilies from "./components/MalwareFamilies";
 import MitreTechniques from "./components/MitreTechniques";
 
-function ThreatIntelligencePage(){
+function ThreatIntelligencePage() {
+  return (
+    <>
+      <PageHeader
+        title="Threat Intelligence"
+        subtitle="Monitor external intelligence feeds, vulnerabilities, malware families, and indicators of compromise."
+      />
 
-return(
+      <ThreatFeedSummary />
 
-<Box>
+      <Grid
+        container
+        spacing={3}
+        mt={1}
+      >
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <ThreatFeedStatus />
+        </Grid>
 
-<PageHeader
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <LatestCVEs />
+        </Grid>
 
-title="Threat Intelligence"
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <IOCList />
+        </Grid>
 
-subtitle="External threat feeds and MITRE ATT&CK knowledge base."
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <MalwareFamilies />
+        </Grid>
 
-/>
-
-<Grid container spacing={3}>
-
-<Grid size={{xs:12,lg:6}}>
-
-<LatestCVEs/>
-
-</Grid>
-
-<Grid size={{xs:12,lg:6}}>
-
-<MitreTechniques/>
-
-</Grid>
-
-</Grid>
-
-</Box>
-
-);
-
+        <Grid size={{ xs: 12 }}>
+          <MitreTechniques />
+        </Grid>
+      </Grid>
+    </>
+  );
 }
 
 export default ThreatIntelligencePage;

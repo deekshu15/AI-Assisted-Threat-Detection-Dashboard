@@ -1,11 +1,27 @@
-import { predictions } from "../data/detectionMock";
+import {
+  models,
+  predictionHistory,
+  predictionSummary,
+} from "../data/detectionMock";
 
-export const DetectionService={
+const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
-getPredictions(){
+const detectionService = {
+  async getModels() {
+    await delay(400);
+    return models;
+  },
 
-return predictions;
+  async getSummary() {
+    await delay(400);
+    return predictionSummary;
+  },
 
-}
+  async getPredictions() {
+    await delay(400);
+    return predictionHistory;
+  },
+};
 
-}
+export default detectionService;

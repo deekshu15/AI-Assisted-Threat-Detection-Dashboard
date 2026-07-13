@@ -1,63 +1,55 @@
-import { Box, Grid } from "@mui/material";
+import Grid from "@mui/material/Grid";
 
-import { PageHeader } from "../../components/ui/page-header";
+import PageHeader from "../../components/ui/PageHeader/PageHeader";
 
-import SourceCard from "./components/SourceCard";
+import ConnectedSources from "./components/ConnectedSources";
+import RecentEvents from "./components/RecentEvents";
+import SourceHealth from "./components/SourceHealth";
+import SourceStatistics from "./components/SourceStatistics";
 
-import { SecurityService } from "./services/securityService";
+function SecuritySourcesPage() {
+  return (
+    <>
+      <PageHeader
+        title="Security Sources"
+        subtitle="Monitor connected log sources, ingestion health, and recent security events."
+      />
 
-function SecuritySourcesPage(){
+      <SourceStatistics />
 
-const sources=SecurityService.getSources();
+      <Grid
+        container
+        spacing={3}
+        mt={1}
+      >
+        <Grid
+          size={{
+            xs: 12,
+          }}
+        >
+          <ConnectedSources />
+        </Grid>
 
-return(
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
+          <SourceHealth />
+        </Grid>
 
-<Box>
-
-<PageHeader
-
-title="Security Sources"
-
-subtitle="Monitor every connected security log source."
-
-/>
-
-<Grid container spacing={3}>
-
-{
-
-sources.map(source=>(
-
-<Grid
-
-size={{
-xs:12,
-sm:6,
-lg:4
-}}
-
-key={source.id}
-
->
-
-<SourceCard
-
-source={source}
-
-/>
-
-</Grid>
-
-))
-
-}
-
-</Grid>
-
-</Box>
-
-);
-
+        <Grid
+          size={{
+            xs: 12,
+            lg: 6,
+          }}
+        >
+          <RecentEvents />
+        </Grid>
+      </Grid>
+    </>
+  );
 }
 
 export default SecuritySourcesPage;

@@ -1,44 +1,70 @@
+import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+
 import {
+  Avatar,
+  Chip,
   List,
   ListItem,
+  ListItemAvatar,
   ListItemText,
-  Chip,
-  Stack,
+  Typography,
 } from "@mui/material";
 
-import DashboardWidget from "../../dashboard/components/DashboardWidget";
-import { SIEMService } from "../services/siemService";
+import { DashboardWidget } from "../../../components/ui/DashboardWidget";
+
+import { liveEvents } from "../data/siemMock";
+
+function severityColor(
+  severity: string
+): "success" | "warning" | "error" {
+  switch (severity) {
+    case "Critical":
+      return "error";
+
+    case "High":
+      return "warning";
+
+    default:
+      return "success";
+  }
+}
 
 function LiveEventStream() {
-  const events = SIEMService.getEvents();
-
   return (
-    <DashboardWidget title="Live Event Stream">
-      <List>
-        {events.map((event) => (
-          <ListItem key={event.id} divider>
+    <DashboardWidget
+      title="Live Event Stream"
+      subtitle="Incoming security events"
+      height={450}
+    >
+      <List disablePadding>
+        {liveEvents.map((event) => (
+          <ListItem
+            key={event.id}
+            divider
+            disablePadding
+            sx={{ py: 1.8 }}
+          >
+            <ListItemAvatar>
+              <Avatar
+                sx={{
+                  bgcolor: "#E0F2FE",
+                  color: "#0284C7",
+                }}
+              >
+                <CircleRoundedIcon />
+              </Avatar>
+            </ListItemAvatar>
+
             <ListItemText
-              primary={`${event.source} • ${event.event}`}
-              secondary={event.timestamp}
+              primary={event.message}
+              secondary={`${event.source} • ${event.timestamp}`}
             />
-            <Stack direction="row" spacing={1}>
-              <Chip
-                label={event.severity}
-                color={
-                  event.severity === "Critical"
-                    ? "error"
-                    : event.severity === "High"
-                    ? "warning"
-                    : "info"
-                }
-                size="small"
-              />
-              <Chip
-                label={event.status}
-                variant="outlined"
-                size="small"
-              />
-            </Stack>
+
+            <Chip
+              size="small"
+              label={event.severity}
+              color={severityColor(event.severity)}
+            />
           </ListItem>
         ))}
       </List>

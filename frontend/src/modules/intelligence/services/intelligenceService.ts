@@ -1,15 +1,33 @@
 import {
-latestCVEs,
-iocs,
-techniques
+  iocs,
+  latestCVEs,
+  malwareFamilies,
+  threatFeeds,
 } from "../data/intelligenceMock";
 
-export const IntelligenceService={
+const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
-getCVEs:()=>latestCVEs,
+const intelligenceService = {
+  async getCVEs() {
+    await delay(300);
+    return latestCVEs;
+  },
 
-getIOCs:()=>iocs,
+  async getIOCs() {
+    await delay(300);
+    return iocs;
+  },
 
-getTechniques:()=>techniques
+  async getMalwareFamilies() {
+    await delay(300);
+    return malwareFamilies;
+  },
 
+  async getThreatFeeds() {
+    await delay(300);
+    return threatFeeds;
+  },
 };
+
+export default intelligenceService;

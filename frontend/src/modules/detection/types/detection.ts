@@ -1,17 +1,29 @@
-export interface Prediction {
+export type ModelState =
+  | "Online"
+  | "Training"
+  | "Offline";
 
-    id:number;
+export interface AIModel {
+  id: number;
+  name: string;
+  algorithm: string;
+  accuracy: number;
+  status: ModelState;
+  version: string;
+}
 
-    model:string;
+export interface PredictionSummary {
+  threatsDetected: number;
+  anomalies: number;
+  falsePositives: number;
+  confidence: number;
+}
 
-    attackType:string;
-
-    confidence:number;
-
-    riskScore:number;
-
-    mitre:string;
-
-    recommendation:string;
-
+export interface ThreatPrediction {
+  id: number;
+  timestamp: string;
+  source: string;
+  prediction: string;
+  confidence: number;
+  severity: "Low" | "Medium" | "High" | "Critical";
 }

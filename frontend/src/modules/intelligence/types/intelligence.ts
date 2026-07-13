@@ -1,31 +1,27 @@
 export interface CVE {
-
-    id:number;
-
-    cve:string;
-
-    severity:"Critical"|"High"|"Medium";
-
-    description:string;
-
+  id: string;
+  severity: "Critical" | "High" | "Medium" | "Low";
+  description: string;
+  published: string;
 }
 
-export interface IOC{
-
-    id:number;
-
-    type:string;
-
-    value:string;
-
+export interface IOC {
+  id: number;
+  type: "IP" | "Domain" | "Hash" | "URL";
+  value: string;
+  confidence: number;
 }
 
-export interface Technique{
+export interface MalwareFamily {
+  id: number;
+  name: string;
+  severity: "Critical" | "High" | "Medium";
+  affectedSystems: number;
+}
 
-    id:number;
-
-    technique:string;
-
-    tactic:string;
-
+export interface ThreatFeed {
+  id: number;
+  provider: string;
+  status: "Connected" | "Disconnected";
+  lastUpdated: string;
 }

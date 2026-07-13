@@ -1,51 +1,70 @@
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+
 import {
-  Stack,
-  Typography,
+  Avatar,
   Chip,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
 } from "@mui/material";
 
-import DashboardWidget from "./DashboardWidget";
+import DashboardWidget from "../../../components/ui/DashboardWidget/DashboardWidget";
 
 const services = [
-  { name: "API Gateway", status: "Healthy" },
-  { name: "Lambda", status: "Healthy" },
-  { name: "Kinesis", status: "Healthy" },
-  { name: "S3", status: "Healthy" },
-  { name: "Glue", status: "Healthy" },
-  { name: "SageMaker", status: "Healthy" },
+  "API Gateway",
+  "Lambda",
+  "Amazon Kinesis",
+  "Amazon S3",
+  "AWS Glue",
+  "Amazon SageMaker",
+  "Amazon DynamoDB",
+  "Amazon SNS",
 ];
 
 function SystemHealth() {
   return (
-    <DashboardWidget title="AWS Services">
-
-      <Stack spacing={2}>
-
+    <DashboardWidget
+      title="AWS Infrastructure"
+      subtitle="Cloud service health"
+      height={420}
+    >
+      <List disablePadding>
         {services.map((service) => (
-
-          <Stack
-            key={service.name}
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+          <ListItem
+            key={service}
+            divider
+            disablePadding
+            sx={{ py: 1.6 }}
           >
+            <ListItemAvatar>
+              <Avatar
+                sx={{
+                  bgcolor: "#DCFCE7",
+                  color: "#16A34A",
+                }}
+              >
+                <CheckCircleRoundedIcon />
+              </Avatar>
+            </ListItemAvatar>
 
-            <Typography>
-              {service.name}
-            </Typography>
+            <ListItemText
+              primary={
+                <Typography fontWeight={600}>
+                  {service}
+                </Typography>
+              }
+            />
 
             <Chip
-              label={service.status}
+              label="Healthy"
               color="success"
               size="small"
             />
-
-          </Stack>
-
+          </ListItem>
         ))}
-
-      </Stack>
-
+      </List>
     </DashboardWidget>
   );
 }

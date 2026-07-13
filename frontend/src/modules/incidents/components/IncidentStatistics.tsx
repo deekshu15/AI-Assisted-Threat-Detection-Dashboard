@@ -1,29 +1,59 @@
-import { Grid } from "@mui/material";
+import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 
-import { Statistic } from "../../../components/ui/Statistic";
-import DashboardWidget from "../../dashboard/components/DashboardWidget";
+import Grid from "@mui/material/Grid";
+
+import { StatusCard } from "../../../components/ui/StatusCard";
 
 function IncidentStatistics() {
   return (
-    <DashboardWidget title="Incident Statistics">
-      <Grid container spacing={2}>
-        <Grid size={{ xs: 6 }}>
-          <Statistic label="Open" value={2} />
-        </Grid>
-
-        <Grid size={{ xs: 6 }}>
-          <Statistic label="Resolved" value={1} />
-        </Grid>
-
-        <Grid size={{ xs: 6 }}>
-          <Statistic label="Critical" value={2} />
-        </Grid>
-
-        <Grid size={{ xs: 6 }}>
-          <Statistic label="Analysts" value={3} />
-        </Grid>
+    <Grid container spacing={3}>
+      <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+        <StatusCard
+          title="Open Incidents"
+          value="18"
+          trend={3}
+          subtitle="Requires investigation"
+          icon={<WarningAmberRoundedIcon />}
+          color="#DC2626"
+        />
       </Grid>
-    </DashboardWidget>
+
+      <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+        <StatusCard
+          title="Resolved Today"
+          value="11"
+          trend={8}
+          subtitle="Completed investigations"
+          icon={<TaskAltRoundedIcon />}
+          color="#10B981"
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+        <StatusCard
+          title="Active Analysts"
+          value="9"
+          trend={1}
+          subtitle="SOC Team"
+          icon={<PersonRoundedIcon />}
+          color="#0284C7"
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6, xl: 3 }}>
+        <StatusCard
+          title="Avg Response"
+          value="12 min"
+          trend={-4}
+          subtitle="Mean response time"
+          icon={<AccessTimeRoundedIcon />}
+          color="#F59E0B"
+        />
+      </Grid>
+    </Grid>
   );
 }
 

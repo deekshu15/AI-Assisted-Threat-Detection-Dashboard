@@ -1,32 +1,72 @@
-import { UploadHistoryItem, PipelineService } from "../types/ingestion";
+import {
+  PipelineService,
+  StreamMetric,
+  UploadFile,
+} from "../types/ingestion";
 
-export const uploadHistory: UploadHistoryItem[] = [
+export const uploadHistory: UploadFile[] = [
   {
     id: 1,
-    filename: "windows_logs.csv",
-    source: "Windows",
-    uploadedAt: "09:15 AM",
+    fileName: "windows_security.evtx",
+    size: "2.4 GB",
+    uploadedAt: "09:42 AM",
     status: "Completed",
   },
   {
     id: 2,
-    filename: "firewall_logs.json",
-    source: "Firewall",
-    uploadedAt: "09:32 AM",
+    fileName: "firewall_logs.csv",
+    size: "980 MB",
+    uploadedAt: "10:16 AM",
     status: "Processing",
   },
   {
     id: 3,
-    filename: "ids_logs.csv",
-    source: "IDS",
-    uploadedAt: "09:48 AM",
+    fileName: "linux_syslog.json",
+    size: "1.8 GB",
+    uploadedAt: "11:02 AM",
     status: "Completed",
   },
 ];
 
 export const pipelineServices: PipelineService[] = [
-  { name: "API Gateway", status: "Healthy" },
-  { name: "Amazon Kinesis", status: "Healthy" },
-  { name: "Normalize Lambda", status: "Healthy" },
-  { name: "Amazon S3", status: "Healthy" },
+  {
+    id: 1,
+    name: "API Gateway",
+    status: "Running",
+    health: 100,
+  },
+  {
+    id: 2,
+    name: "Amazon Kinesis",
+    status: "Running",
+    health: 99,
+  },
+  {
+    id: 3,
+    name: "AWS Lambda",
+    status: "Running",
+    health: 98,
+  },
+  {
+    id: 4,
+    name: "Amazon S3",
+    status: "Running",
+    health: 100,
+  },
+  {
+    id: 5,
+    name: "AWS Glue",
+    status: "Running",
+    health: 97,
+  },
+];
+
+export const streamMetrics: StreamMetric[] = [
+  { timestamp: "08:00", events: 800 },
+  { timestamp: "09:00", events: 1250 },
+  { timestamp: "10:00", events: 2100 },
+  { timestamp: "11:00", events: 2750 },
+  { timestamp: "12:00", events: 3200 },
+  { timestamp: "13:00", events: 2800 },
+  { timestamp: "14:00", events: 3500 },
 ];

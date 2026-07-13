@@ -1,59 +1,66 @@
-import { Prediction } from "../types/detection";
+import {
+  AIModel,
+  PredictionSummary,
+  ThreatPrediction,
+} from "../types/detection";
 
-export const predictions:Prediction[]=[
+export const models: AIModel[] = [
+  {
+    id: 1,
+    name: "Isolation Forest",
+    algorithm: "Unsupervised",
+    accuracy: 98.6,
+    status: "Online",
+    version: "v2.3",
+  },
+  {
+    id: 2,
+    name: "Random Forest",
+    algorithm: "Classification",
+    accuracy: 97.4,
+    status: "Online",
+    version: "v3.1",
+  },
+  {
+    id: 3,
+    name: "XGBoost",
+    algorithm: "Gradient Boosting",
+    accuracy: 99.1,
+    status: "Online",
+    version: "v4.0",
+  },
+];
 
-{
+export const predictionSummary: PredictionSummary = {
+  threatsDetected: 1248,
+  anomalies: 318,
+  falsePositives: 14,
+  confidence: 98,
+};
 
-id:1,
-
-model:"Isolation Forest",
-
-attackType:"Brute Force",
-
-confidence:97,
-
-riskScore:91,
-
-mitre:"T1110",
-
-recommendation:"Block source IP immediately."
-
-},
-
-{
-
-id:2,
-
-model:"Random Forest",
-
-attackType:"Privilege Escalation",
-
-confidence:94,
-
-riskScore:88,
-
-mitre:"T1068",
-
-recommendation:"Review administrator accounts."
-
-},
-
-{
-
-id:3,
-
-model:"XGBoost",
-
-attackType:"DDoS",
-
-confidence:99,
-
-riskScore:96,
-
-mitre:"T1498",
-
-recommendation:"Enable rate limiting."
-
-}
-
+export const predictionHistory: ThreatPrediction[] = [
+  {
+    id: 1,
+    timestamp: "11:42",
+    source: "Windows Logs",
+    prediction: "Brute Force",
+    confidence: 99,
+    severity: "Critical",
+  },
+  {
+    id: 2,
+    timestamp: "11:45",
+    source: "Firewall",
+    prediction: "Port Scan",
+    confidence: 94,
+    severity: "High",
+  },
+  {
+    id: 3,
+    timestamp: "11:49",
+    source: "Linux",
+    prediction: "Privilege Escalation",
+    confidence: 91,
+    severity: "High",
+  },
 ];

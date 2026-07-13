@@ -1,40 +1,61 @@
-import {
-  Button,
-  Stack,
-  Typography,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
 
-import DashboardWidget from "../../dashboard/components/DashboardWidget";
+import UploadCard from "./UploadCard";
+import SupportedFormats from "./SupportedFormats";
+import UploadHistory from "./UploadHistory";
+import PipelineStatus from "./PipelineStatus";
+import StreamStatus from "./StreamStatus";
 
 function UploadCenter() {
   return (
-    <DashboardWidget title="Upload Security Logs">
-      <Typography mb={3}>
-        Supported log formats:
-      </Typography>
-
-      <Stack
-        direction="row"
-        spacing={2}
-        flexWrap="wrap"
+    <Grid
+      container
+      spacing={3}
+    >
+      <Grid
+        size={{
+          xs: 12,
+          lg: 6,
+        }}
       >
-        <Button variant="contained">
-          CSV
-        </Button>
+        <UploadCard />
+      </Grid>
 
-        <Button variant="contained">
-          JSON
-        </Button>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 6,
+        }}
+      >
+        <SupportedFormats />
+      </Grid>
 
-        <Button variant="contained">
-          EVTX
-        </Button>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 6,
+        }}
+      >
+        <UploadHistory />
+      </Grid>
 
-        <Button variant="contained">
-          Parquet
-        </Button>
-      </Stack>
-    </DashboardWidget>
+      <Grid
+        size={{
+          xs: 12,
+          lg: 6,
+        }}
+      >
+        <PipelineStatus />
+      </Grid>
+
+      <Grid
+        size={{
+          xs: 12,
+        }}
+      >
+        <StreamStatus />
+      </Grid>
+    </Grid>
   );
 }
 

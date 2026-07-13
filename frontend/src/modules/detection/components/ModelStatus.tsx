@@ -1,75 +1,81 @@
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+
 import {
-Grid,
-Chip,
-Card,
-CardContent,
-Typography
+  Avatar,
+  Chip,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Stack,
+  Typography,
 } from "@mui/material";
 
-const models=[
+import DashboardWidget from "../../../components/ui/DashboardWidget/DashboardWidget";
 
-"Isolation Forest",
+import { models } from "../data/detectionMock";
 
-"Random Forest",
+function ModelStatus() {
+  return (
+    <DashboardWidget
+      title="AI Model Status"
+      subtitle="Machine learning models deployed in SageMaker"
+      height={420}
+    >
+      <List disablePadding>
+        {models.map((model) => (
+          <ListItem
+            key={model.id}
+            divider
+            disablePadding
+            sx={{ py: 1.5 }}
+          >
+            <ListItemAvatar>
+              <Avatar
+                sx={{
+                  bgcolor: "#DCFCE7",
+                  color: "#16A34A",
+                }}
+              >
+                <CheckCircleRoundedIcon />
+              </Avatar>
+            </ListItemAvatar>
 
-"XGBoost"
+            <ListItemText
+              primary={model.name}
+              secondary={
+                <Stack spacing={1} mt={1}>
+                  <Typography variant="caption">
+                    {model.algorithm} • {model.version}
+                  </Typography>
 
-];
+                  <LinearProgress
+                    variant="determinate"
+                    value={model.accuracy}
+                    sx={{
+                      height: 8,
+                      borderRadius: 8,
+                    }}
+                  />
 
-function ModelStatus(){
+                  <Typography variant="caption">
+                    Accuracy: {model.accuracy}%
+                  </Typography>
+                </Stack>
+              }
+            />
 
-return(
-
-<Grid container spacing={2}>
-
-{
-
-models.map(model=>(
-
-<Grid
-size={{
-xs:12,
-md:4
-}}
-key={model}
->
-
-<Card>
-
-<CardContent>
-
-<Typography
-variant="h6"
->
-
-{model}
-
-</Typography>
-
-<Chip
-
-label="Running"
-
-color="success"
-
-sx={{mt:2}}
-
-/>
-
-</CardContent>
-
-</Card>
-
-</Grid>
-
-))
-
-}
-
-</Grid>
-
-);
-
+            <Chip
+              label={model.status}
+              color="success"
+              size="small"
+            />
+          </ListItem>
+        ))}
+      </List>
+    </DashboardWidget>
+  );
 }
 
 export default ModelStatus;

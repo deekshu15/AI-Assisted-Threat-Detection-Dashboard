@@ -1,36 +1,85 @@
-import { SecurityEvent } from "../types/siem";
+import {
+  ActiveSession,
+  CorrelationRule,
+  SeverityStatistic,
+  SIEMEvent,
+} from "../types/siem";
 
-export const events: SecurityEvent[] = [
+export const liveEvents: SIEMEvent[] = [
   {
     id: 1,
-    timestamp: "10:05:22",
+    timestamp: "12:01",
     source: "Windows",
     severity: "Critical",
-    event: "Brute Force Login",
-    status: "Open",
+    message: "Brute Force Login",
   },
   {
     id: 2,
-    timestamp: "10:07:11",
+    timestamp: "12:03",
     source: "Firewall",
     severity: "High",
-    event: "Port Scan",
-    status: "Investigating",
+    message: "Port Scan",
   },
   {
     id: 3,
-    timestamp: "10:08:52",
-    source: "IDS",
-    severity: "Critical",
-    event: "DDoS Attack",
-    status: "Open",
-  },
-  {
-    id: 4,
-    timestamp: "10:10:03",
+    timestamp: "12:05",
     source: "Linux",
     severity: "Medium",
-    event: "Privilege Escalation",
-    status: "Resolved",
+    message: "SSH Failure",
+  },
+];
+
+export const correlationRules: CorrelationRule[] = [
+  {
+    id: 1,
+    name: "Multiple Failed Logins",
+    matches: 52,
+    enabled: true,
+  },
+  {
+    id: 2,
+    name: "PowerShell Abuse",
+    matches: 13,
+    enabled: true,
+  },
+  {
+    id: 3,
+    name: "Privilege Escalation",
+    matches: 8,
+    enabled: true,
+  },
+];
+
+export const activeSessions: ActiveSession[] = [
+  {
+    id: 1,
+    username: "Administrator",
+    ipAddress: "192.168.1.21",
+    status: "Active",
+  },
+  {
+    id: 2,
+    username: "john.smith",
+    ipAddress: "10.0.2.15",
+    status: "Suspicious",
+  },
+];
+
+export const severityStatistics: SeverityStatistic[] = [
+  {
+    severity: "Critical",
+    count: 28,
+  },
+  {
+    severity: "High",
+    count: 61,
+  },
+  {
+    severity: "Medium",
+    count: 84,
+  },
+  {
+    severity: "Low",
+    count: 42,
   },
 ];

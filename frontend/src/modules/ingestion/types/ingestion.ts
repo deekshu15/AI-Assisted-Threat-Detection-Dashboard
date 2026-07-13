@@ -1,12 +1,25 @@
-export interface UploadHistoryItem {
+export type PipelineStatus =
+  | "Running"
+  | "Idle"
+  | "Warning"
+  | "Offline";
+
+export interface UploadFile {
   id: number;
-  filename: string;
-  source: string;
+  fileName: string;
+  size: string;
   uploadedAt: string;
   status: "Completed" | "Processing" | "Failed";
 }
 
 export interface PipelineService {
+  id: number;
   name: string;
-  status: "Healthy" | "Offline";
+  status: PipelineStatus;
+  health: number;
+}
+
+export interface StreamMetric {
+  timestamp: string;
+  events: number;
 }

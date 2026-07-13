@@ -1,56 +1,94 @@
+import StorageRoundedIcon from "@mui/icons-material/StorageRounded";
+
 import {
+  Avatar,
+  LinearProgress,
   Stack,
   Typography,
 } from "@mui/material";
 
-import { DashboardCard } from "../../../components/ui/card";
-import { StatusChip } from "../../../components/ui/chip";
+import DashboardWidget from "../../../components/ui/DashboardWidget/DashboardWidget";
 
 const sources = [
-  "Windows",
-  "Linux",
-  "Firewall",
-  "IDS",
-  "Threat Feed",
-  "CVE Feed",
+  {
+    name: "Windows Logs",
+    status: 98,
+  },
+  {
+    name: "Firewall",
+    status: 96,
+  },
+  {
+    name: "IDS / IPS",
+    status: 91,
+  },
+  {
+    name: "Threat Intelligence",
+    status: 87,
+  },
+  {
+    name: "Authentication",
+    status: 95,
+  },
 ];
 
 function SecuritySources() {
   return (
-    <DashboardCard>
-
-      <Typography
-        variant="h6"
-        mb={2}
-      >
-        Security Sources
-      </Typography>
-
-      <Stack spacing={2}>
-
-        {sources.map(source => (
-
+    <DashboardWidget
+      title="Security Sources"
+      subtitle="Connected log providers"
+      height={420}
+    >
+      <Stack spacing={3}>
+        {sources.map((source) => (
           <Stack
-            key={source}
-            direction="row"
-            justifyContent="space-between"
+            key={source.name}
+            spacing={1}
           >
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+              >
+                <Avatar
+                  sx={{
+                    bgcolor: "#E0F2FE",
+                    color: "#0284C7",
+                  }}
+                >
+                  <StorageRoundedIcon />
+                </Avatar>
 
-            <Typography>
+                <Typography fontWeight={600}>
+                  {source.name}
+                </Typography>
+              </Stack>
 
-              {source}
+              <Typography
+                color="primary"
+                fontWeight={700}
+              >
+                {source.status}%
+              </Typography>
+            </Stack>
 
-            </Typography>
-
-            <StatusChip status="Online" />
-
+            <LinearProgress
+              variant="determinate"
+              value={source.status}
+              sx={{
+                height: 8,
+                borderRadius: 10,
+              }}
+            />
           </Stack>
-
         ))}
-
       </Stack>
-
-    </DashboardCard>
+    </DashboardWidget>
   );
 }
 
