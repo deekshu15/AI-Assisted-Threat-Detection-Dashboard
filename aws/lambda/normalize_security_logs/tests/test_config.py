@@ -8,17 +8,35 @@ sys.path.append(str(PROJECT_ROOT))
 from config import Config
 
 
-def main():
-    print("=" * 50)
-    print("Testing Config Module")
-    print("=" * 50)
-    print(f"AWS Region       : {Config.AWS_REGION}")
-    print(f"Raw Bucket       : {Config.RAW_BUCKET}")
-    print(f"Processed Bucket : {Config.PROCESSED_BUCKET}")
-    print(f"Log Level        : {Config.LOG_LEVEL}")
-    print(f"Environment      : {Config.ENVIRONMENT}")
-    print("=" * 50)
+def test_aws_region_is_set():
+    """AWS_REGION should exist and look like a real AWS region string."""
+    assert Config.AWS_REGION, "AWS_REGION is empty or missing"
+    assert isinstance(Config.AWS_REGION, str)
 
 
-if __name__ == "__main__":
-    main()
+def test_raw_bucket_is_set():
+    """RAW_BUCKET should exist and be a non-empty string."""
+    assert Config.RAW_BUCKET, "RAW_BUCKET is empty or missing"
+    assert isinstance(Config.RAW_BUCKET, str)
+
+
+def test_processed_bucket_is_set():
+    """PROCESSED_BUCKET should exist and be a non-empty string."""
+    assert Config.PROCESSED_BUCKET, "PROCESSED_BUCKET is empty or missing"
+    assert isinstance(Config.PROCESSED_BUCKET, str)
+
+
+def test_log_level_is_valid():
+    """LOG_LEVEL should be one of the standard logging levels."""
+    valid_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+    assert Config.LOG_LEVEL in valid_levels, (
+        f"LOG_LEVEL is '{Config.LOG_LEVEL}', expected one of {valid_levels}"
+    )
+
+
+def test_environment_is_valid():
+    """ENVIRONMENT should be one of the expected deployment stages."""
+    valid_environments = {"development", "staging", "production"}
+    assert Config.ENVIRONMENT in valid_environments, (
+        f"ENVIRONMENT is '{Config.ENVIRONMENT}', expected one of {valid_environments}"
+    )

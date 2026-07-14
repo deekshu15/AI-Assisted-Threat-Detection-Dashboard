@@ -11,10 +11,13 @@ from processors.windows_processor import WindowsProcessor
 
 processor = WindowsProcessor()
 
-df = pd.read_csv(
-    "../../../evtx_data.csv",
-    low_memory=False
-)
+import os
+import pandas as pd
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(BASE_DIR, "..", "..", "..", "..", "datasets", "raw", "windows", "windows_events.csv")
+
+df = pd.read_csv(DATA_PATH, low_memory=False)
 
 normalized = processor.normalize(df)
 
