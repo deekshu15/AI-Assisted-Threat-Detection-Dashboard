@@ -2,6 +2,7 @@ from processors.windows_processor import WindowsProcessor
 from processors.ids_processor import IDSProcessor
 from processors.linux_processor import LinuxProcessor
 from processors.firewall_processor import FirewallProcessor
+from processors.cve_processor import CVEProcessor
 
 
 class ProcessorFactory:
@@ -12,6 +13,7 @@ class ProcessorFactory:
         "ids": IDSProcessor,
         "linux": LinuxProcessor,
         "firewall": FirewallProcessor,
+        "cve": CVEProcessor,
     }
 
     @staticmethod

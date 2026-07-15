@@ -10,8 +10,11 @@ const delay = (ms: number) =>
 
 const siemService = {
   async getEvents() {
-    await delay(300);
-    return liveEvents;
+    const response = await fetch("http://localhost:8000/api/siem/events");
+    if (!response.ok) {
+      throw new Error("Failed to fetch SIEM events from local API");
+    }
+    return response.json();
   },
 
   async getRules() {
@@ -25,8 +28,11 @@ const siemService = {
   },
 
   async getSeverity() {
-    await delay(300);
-    return severityStatistics;
+    const response = await fetch("http://localhost:8000/api/siem/severity");
+    if (!response.ok) {
+      throw new Error("Failed to fetch severity data from local API");
+    }
+    return response.json();
   },
 };
 

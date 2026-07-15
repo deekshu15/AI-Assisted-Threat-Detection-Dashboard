@@ -10,8 +10,11 @@ const delay = (ms: number) =>
 
 const intelligenceService = {
   async getCVEs() {
-    await delay(300);
-    return latestCVEs;
+    const response = await fetch("http://localhost:8000/api/cves");
+    if (!response.ok) {
+      throw new Error("Failed to fetch CVEs from local API");
+    }
+    return response.json();
   },
 
   async getIOCs() {

@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
@@ -7,7 +9,44 @@ import { Box, Chip, Divider, Grid, List, ListItem, ListItemText, Stack, Typograp
 import GlassSurface from "../../components/ui/GlassSurface";
 import PageHeader from "../../components/ui/PageHeader/PageHeader";
 
+interface RecentEvent {
+  id: number;
+  timestamp: string;
+  source: string;
+  message: string;
+}
+
+function formatCount(value: number): string {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+  if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
+  return String(value);
+}
+
 function DashboardPage() {
+  const [signalsIngested, setSignalsIngested] = useState<string>("—");
+  const [criticalDetections, setCriticalDetections] = useState<string>("—");
+  const [recentActivity, setRecentActivity] = useState<RecentEvent[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/siem/total-count")
+      .then((res) => res.json())
+      .then((data) => setSignalsIngested(formatCount(data.total)))
+      .catch(() => setSignalsIngested("—"));
+
+    fetch("http://localhost:8000/api/siem/severity")
+      .then((res) => res.json())
+      .then((data) => {
+        const critical = data.find((item: { severity: string }) => item.severity === "Critical");
+        setCriticalDetections(critical ? formatCount(critical.count) : "0");
+      })
+      .catch(() => setCriticalDetections("—"));
+
+    fetch("http://localhost:8000/api/siem/events?limit=3")
+      .then((res) => res.json())
+      .then((data) => setRecentActivity(data))
+      .catch(() => setRecentActivity([]));
+  }, []);
+
   return (
     <>
       <PageHeader
@@ -32,8 +71,8 @@ function DashboardPage() {
 
             <Grid container spacing={2}>
               {[
-                { label: "Signals ingested", value: "18.2K", hint: "+12% vs last hour" },
-                { label: "Critical detections", value: "24", hint: "5 escalated" },
+                { label: "Signals ingested", value: signalsIngested, hint: "Live count from normalized data" },
+                { label: "Critical detections", value: criticalDetections, hint: "From normalized events" },
                 { label: "Auto-contained", value: "91%", hint: "above target" },
               ].map((item) => (
                 <Grid size={{ xs: 12, sm: 4 }} key={item.label}>
@@ -118,14 +157,15 @@ function DashboardPage() {
               Recent activity
             </Typography>
             <Stack spacing={1.5} mt={1.5}>
-              {[
-                ["Incident triage", "12 mins ago"],
-                ["New IOC ingested", "24 mins ago"],
-                ["MITRE mapping refreshed", "1 hr ago"],
-              ].map(([title, time]) => (
-                <Box key={title} sx={{ p: 1.4, borderRadius: 3, bgcolor: "rgba(255,255,255,0.05)" }}>
-                  <Typography fontWeight={600}>{title}</Typography>
-                  <Typography variant="body2" color="text.secondary">{time}</Typography>
+              {recentActivity.length === 0 && (
+                <Typography variant="body2" color="text.secondary">
+                  Loading recent activity...
+                </Typography>
+              )}
+              {recentActivity.map((event) => (
+                <Box key={event.id} sx={{ p: 1.4, borderRadius: 3, bgcolor: "rgba(255,255,255,0.05)" }}>
+                  <Typography fontWeight={600}>{event.message}</Typography>
+                  <Typography variant="body2" color="text.secondary">{event.source} • {event.timestamp}</Typography>
                 </Box>
               ))}
             </Stack>
