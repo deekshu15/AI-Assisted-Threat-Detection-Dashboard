@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
-import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
-import VerifiedRoundedIcon from "@mui/icons-material/VerifiedRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { Box, Chip, Divider, Grid, List, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 
@@ -16,15 +14,35 @@ interface RecentEvent {
   message: string;
 }
 
+interface Priority {
+  id: number;
+  title: string;
+  detail: string;
+  severity: string;
+}
+
+interface SourceBreakdown {
+  source: string;
+  count: number;
+  percent: number;
+}
+
 function formatCount(value: number): string {
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
   if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
   return String(value);
 }
 
+function severityColor(severity: string): "error" | "warning" {
+  return severity === "Critical" ? "error" : "warning";
+}
+
 function DashboardPage() {
   const [signalsIngested, setSignalsIngested] = useState<string>("—");
   const [criticalDetections, setCriticalDetections] = useState<string>("—");
+  const [routineRate, setRoutineRate] = useState<string>("—");
+  const [priorities, setPriorities] = useState<Priority[]>([]);
+  const [sourceBreakdown, setSourceBreakdown] = useState<SourceBreakdown[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentEvent[]>([]);
 
   useEffect(() => {
@@ -35,15 +53,34 @@ function DashboardPage() {
 
     fetch("http://localhost:8000/api/siem/severity")
       .then((res) => res.json())
-      .then((data) => {
-        const critical = data.find((item: { severity: string }) => item.severity === "Critical");
+      .then((data: { severity: string; count: number }[]) => {
+        const critical = data.find((item) => item.severity === "Critical");
         setCriticalDetections(critical ? formatCount(critical.count) : "0");
+
+        const total = data.reduce((sum, item) => sum + item.count, 0);
+        const routine = data
+          .filter((item) => item.severity === "Medium" || item.severity === "Low")
+          .reduce((sum, item) => sum + item.count, 0);
+        setRoutineRate(total > 0 ? `${((routine / total) * 100).toFixed(1)}%` : "—");
       })
-      .catch(() => setCriticalDetections("—"));
+      .catch(() => {
+        setCriticalDetections("—");
+        setRoutineRate("—");
+      });
+
+    fetch("http://localhost:8000/api/siem/priorities?limit=3")
+      .then((res) => res.json())
+      .then(setPriorities)
+      .catch(() => setPriorities([]));
+
+    fetch("http://localhost:8000/api/siem/source-breakdown")
+      .then((res) => res.json())
+      .then(setSourceBreakdown)
+      .catch(() => setSourceBreakdown([]));
 
     fetch("http://localhost:8000/api/siem/events?limit=3")
       .then((res) => res.json())
-      .then((data) => setRecentActivity(data))
+      .then(setRecentActivity)
       .catch(() => setRecentActivity([]));
   }, []);
 
@@ -63,20 +100,20 @@ function DashboardPage() {
                   Threat readiness snapshot
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mt: 0.7 }}>
-                  Monitoring posture is healthy, with two high-priority events requiring analyst attention.
+                  Live metrics computed from normalized Windows and IDS event data.
                 </Typography>
               </Box>
-              <Chip icon={<ShieldRoundedIcon />} label="Operationally ready" color="success" variant="outlined" />
+              <Chip icon={<ShieldRoundedIcon />} label="Live data" color="success" variant="outlined" />
             </Stack>
 
             <Grid container spacing={2}>
               {[
-                { label: "Signals ingested", value: signalsIngested, hint: "Live count from normalized data" },
-                { label: "Critical detections", value: criticalDetections, hint: "From normalized events" },
-                { label: "Auto-contained", value: "91%", hint: "above target" },
+                { label: "Signals ingested", value: signalsIngested, hint: "Total normalized events" },
+                { label: "Critical detections", value: criticalDetections, hint: "Highest severity events" },
+                { label: "Routine event rate", value: routineRate, hint: "Medium/Low of total" },
               ].map((item) => (
                 <Grid size={{ xs: 12, sm: 4 }} key={item.label}>
-                  <Box sx={{ p: 2.2, borderRadius: 3, bgcolor: "rgba(255,255,255,0.05)" }}>
+                  <Box sx={{ p: 2.2, borderRadius: 3, bgcolor: "rgba(255,255,255,0.05)", height: "100%" }}>
                     <Typography variant="caption" color="text.secondary">
                       {item.label}
                     </Typography>
@@ -98,30 +135,27 @@ function DashboardPage() {
             <Typography variant="subtitle1" fontWeight={700} gutterBottom>
               Immediate priorities
             </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+              Most recent high-severity events
+            </Typography>
             <List disablePadding>
-              {[
-                { title: "Investigate ransomware beacon", detail: "Detected in lateral movement path", icon: WarningAmberRoundedIcon },
-                { title: "Review cloud IAM anomalies", detail: "Suspicious privilege change", icon: TrendingUpRoundedIcon },
-                { title: "Validate enrichment coverage", detail: "MITRE mapping backlog reduced", icon: VerifiedRoundedIcon },
-              ].map((item, index) => {
-                const Icon = item.icon as typeof WarningAmberRoundedIcon;
-
-                return (
-                  <Box key={item.title}>
-                    <ListItem disableGutters sx={{ py: 1.25 }}>
-                      <Box sx={{ mr: 1.5, color: "primary.main" }}>
-                        <Icon />
-                      </Box>
-                      <ListItemText
-                        primary={item.title}
-                        secondary={item.detail}
-                        sx={{ my: 0 }}
-                      />
-                    </ListItem>
-                    {index < 2 && <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />}
-                  </Box>
-                );
-              })}
+              {priorities.length === 0 && (
+                <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
+                  Loading...
+                </Typography>
+              )}
+              {priorities.map((item, index) => (
+                <Box key={item.id}>
+                  <ListItem disableGutters sx={{ py: 1.25 }}>
+                    <Box sx={{ mr: 1.5, color: severityColor(item.severity) === "error" ? "error.main" : "warning.main" }}>
+                      <WarningAmberRoundedIcon />
+                    </Box>
+                    <ListItemText primary={item.title} secondary={item.detail} sx={{ my: 0 }} />
+                    <Chip size="small" label={item.severity} color={severityColor(item.severity)} />
+                  </ListItem>
+                  {index < priorities.length - 1 && <Divider sx={{ borderColor: "rgba(255,255,255,0.08)" }} />}
+                </Box>
+              ))}
             </List>
           </GlassSurface>
         </Grid>
@@ -129,21 +163,25 @@ function DashboardPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           <GlassSurface sx={{ p: 3 }}>
             <Typography variant="subtitle1" fontWeight={700} gutterBottom>
-              Coverage posture
+              Event source breakdown
             </Typography>
-            <Stack spacing={2.2} mt={1.5}>
-              {[
-                ["Windows telemetry", "98%"],
-                ["AWS audit trail", "94%"],
-                ["Threat feed enrichment", "89%"],
-              ].map(([label, value]) => (
-                <Box key={label}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Share of total events by source
+            </Typography>
+            <Stack spacing={2.2}>
+              {sourceBreakdown.length === 0 && (
+                <Typography variant="body2" color="text.secondary">Loading...</Typography>
+              )}
+              {sourceBreakdown.map((item) => (
+                <Box key={item.source}>
                   <Stack direction="row" justifyContent="space-between" mb={0.6}>
-                    <Typography variant="body2">{label}</Typography>
-                    <Typography variant="body2" color="primary" fontWeight={700}>{value}</Typography>
+                    <Typography variant="body2">{item.source}</Typography>
+                    <Typography variant="body2" color="primary" fontWeight={700}>
+                      {item.percent}% ({formatCount(item.count)})
+                    </Typography>
                   </Stack>
                   <Box sx={{ height: 8, borderRadius: 999, bgcolor: "rgba(255,255,255,0.08)" }}>
-                    <Box sx={{ width: value, height: 8, borderRadius: 999, bgcolor: "linear-gradient(90deg, #4F5DFF 0%, #2E9E8E 100%)" }} />
+                    <Box sx={{ width: `${item.percent}%`, height: 8, borderRadius: 999, bgcolor: "linear-gradient(90deg, #4F5DFF 0%, #2E9E8E 100%)" }} />
                   </Box>
                 </Box>
               ))}
@@ -158,9 +196,7 @@ function DashboardPage() {
             </Typography>
             <Stack spacing={1.5} mt={1.5}>
               {recentActivity.length === 0 && (
-                <Typography variant="body2" color="text.secondary">
-                  Loading recent activity...
-                </Typography>
+                <Typography variant="body2" color="text.secondary">Loading...</Typography>
               )}
               {recentActivity.map((event) => (
                 <Box key={event.id} sx={{ p: 1.4, borderRadius: 3, bgcolor: "rgba(255,255,255,0.05)" }}>

@@ -2,14 +2,28 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 
-import { AppBar, IconButton, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, IconButton, Stack, Tab, Tabs, Toolbar, Typography } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import NotificationDrawer from "./NotificationDrawer";
 import UserMenu from "./UserMenu";
 import { useThemeMode } from "../theme/ThemeModeContext";
 
+const TOP_TABS = [
+  { label: "Dashboard", path: "/dashboard" },
+  { label: "Analytics", path: "/analytics" },
+  { label: "AI Summary", path: "/ai-summary" },
+  { label: "AI Recs", path: "/ai-recs" },
+];
+
 function Header() {
   const { mode, toggleColorMode } = useThemeMode();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const activeTab = TOP_TABS.some((tab) => tab.path === location.pathname)
+    ? location.pathname
+    : false;
 
   return (
     <AppBar
@@ -24,22 +38,43 @@ function Header() {
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar sx={{ minHeight: 82, px: { xs: 2, md: 4 }, justifyContent: "space-between" }}>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Stack direction="row" spacing={1.25} alignItems="center">
-            <ShieldRoundedIcon color="primary" />
-            <Stack spacing={0}>
-              <Typography variant="subtitle1" fontWeight={800} color="primary">
-                Northstar Threat Command
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Security Operations Center
-              </Typography>
-            </Stack>
+      <Toolbar sx={{ minHeight: 82, px: { xs: 2, md: 4 }, justifyContent: "space-between", gap: 3 }}>
+        <Stack direction="row" spacing={1.25} alignItems="center" sx={{ flexShrink: 0 }}>
+          <ShieldRoundedIcon color="primary" />
+          <Stack spacing={0}>
+            <Typography variant="subtitle1" fontWeight={800} color="primary">
+              Northstar Threat Command
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Security Operations Center
+            </Typography>
           </Stack>
         </Stack>
 
-        <Stack direction="row" spacing={1.25} alignItems="center">
+        <Tabs
+          value={activeTab}
+          onChange={(_, value) => navigate(value)}
+          textColor="primary"
+          indicatorColor="primary"
+          sx={{
+            minHeight: 44,
+            display: { xs: "none", md: "flex" },
+            "& .MuiTab-root": {
+              minHeight: 44,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: 14,
+              color: "text.secondary",
+            },
+            "& .Mui-selected": { color: "primary.main" },
+          }}
+        >
+          {TOP_TABS.map((tab) => (
+            <Tab key={tab.path} label={tab.label} value={tab.path} />
+          ))}
+        </Tabs>
+
+        <Stack direction="row" spacing={1.25} alignItems="center" sx={{ flexShrink: 0 }}>
           <IconButton onClick={toggleColorMode} color="primary" size="small">
             {mode === "dark" ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
           </IconButton>

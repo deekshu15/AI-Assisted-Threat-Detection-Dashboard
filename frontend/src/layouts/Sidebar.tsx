@@ -3,18 +3,23 @@ import {
   ChevronRightRounded,
   ExpandLessRounded,
   ExpandMoreRounded,
+  SearchRounded,
+  SmartToyRounded,
 } from "@mui/icons-material";
 
 import {
   Avatar,
   Box,
+  Chip,
   Collapse,
   Divider,
   IconButton,
+  InputBase,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Paper,
   Stack,
   Tooltip,
   Typography,
@@ -54,7 +59,15 @@ function Sidebar({ onNavigate }: SidebarProps) {
           <ListItemButton
             onClick={() => {
               if (item.groupKey) {
-                setExpandedGroups((current) => ({ ...current, [item.groupKey!]: !current[item.groupKey!] }));
+                const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+                  core: true,
+                  pages: true,
+                  security: true,
+                  penetration: false,
+                  webapp: false,
+                  siem: false,
+                  forensics: false,
+                });
               }
             }}
             sx={{
@@ -114,9 +127,7 @@ function Sidebar({ onNavigate }: SidebarProps) {
               color: "primary.main",
               boxShadow: "inset 0 0 0 1px rgba(79,93,255,0.3)",
             },
-            "&:hover": {
-              bgcolor: "rgba(255,255,255,0.08)",
-            },
+            "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
           }}
         >
           {Icon && (
@@ -165,6 +176,50 @@ function Sidebar({ onNavigate }: SidebarProps) {
           {collapsed ? <ChevronRightRounded /> : <ChevronLeftRounded />}
         </IconButton>
       </Stack>
+
+      {!collapsed && (
+        <Box sx={{ px: 2.5, pb: 2 }}>
+          <Paper
+            elevation={0}
+            sx={(theme) => ({
+              display: "flex",
+              alignItems: "center",
+              px: 1.5,
+              height: 42,
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.1)" : "rgba(15,23,42,0.1)",
+              bgcolor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.05)" : "rgba(15,23,42,0.03)",
+            })}
+          >
+            <SearchRounded fontSize="small" sx={{ color: "text.secondary", mr: 1 }} />
+            <InputBase placeholder="Search tools..." fullWidth sx={{ fontSize: 14 }} />
+          </Paper>
+        </Box>
+      )}
+
+      {!collapsed && (
+        <Box sx={{ px: 2.5, pb: 2 }}>
+          <ListItemButton
+            component={NavLink}
+            to="/ai-assistant"
+            onClick={onNavigate}
+            sx={{
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "rgba(79,93,255,0.35)",
+              bgcolor: "rgba(79,93,255,0.1)",
+              "&:hover": { bgcolor: "rgba(79,93,255,0.16)" },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 38, color: "primary.main" }}>
+              <SmartToyRounded fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="AI Assistant" primaryTypographyProps={{ fontWeight: 700 }} />
+            <Chip label="AI" size="small" color="primary" sx={{ height: 22, fontWeight: 700 }} />
+          </ListItemButton>
+        </Box>
+      )}
 
       <Divider sx={{ borderColor: "divider" }} />
 

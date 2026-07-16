@@ -182,11 +182,14 @@ def _describe_event(row) -> str:
             return "Unknown Windows Event"
     return str(row["event_type"])
 
+_events_cache = None
 
 def _load_combined_events() -> pd.DataFrame:
-    """Loads and normalizes real Windows + IDS data, combined into one DataFrame."""
-    frames = []
+    global _events_cache
+    if _events_cache is not None:
+        return _events_cache.copy()
 
+    frames = []
     if WINDOWS_DATASET_PATH.exists():
         windows_df = pd.read_csv(WINDOWS_DATASET_PATH, low_memory=False)
         frames.append(WindowsProcessor().normalize(windows_df))
@@ -201,7 +204,8 @@ def _load_combined_events() -> pd.DataFrame:
 
     combined = pd.concat(frames, ignore_index=True)
     combined["severity"] = combined["severity"].map(SIEM_SEVERITY_MAP).fillna("Low")
-    return combined
+    _events_cache = combined
+    return _events_cache.copy()
 
 
 @app.get("/api/siem/events")
@@ -243,6 +247,46 @@ def get_siem_severity():
     # Always return all 4 categories, even if a count is 0, so the chart doesn't silently drop bars.
     ordered = ["Critical", "High", "Medium", "Low"]
     return [{"severity": s, "count": int(counts.get(s, 0))} for s in ordered]
+
+
+@app.get("/api/siem/source-breakdown")
+def get_source_breakdown():
+    """Real event count and share per data source."""
+    combined = _load_combined_events()
+    if combined.empty:
+        return []
+    total = len(combined)
+    counts = combined["source"].value_counts()
+    label_map = {"windows": "Windows", "ids": "IDS"}
+    return [
+        {"source": label_map.get(src, src.capitalize()), "count": int(count), "percent": round(count / total * 100, 1)}
+        for src, count in counts.items()
+    ]
+
+
+@app.get("/api/siem/priorities")
+def get_priorities(limit: int = 3):
+    """Most recent genuinely high-severity events, used as real 'immediate priorities'."""
+    combined = _load_combined_events()
+    if combined.empty:
+        return []
+    priority = combined[combined["severity"].isin(["Critical", "High"])].sort_values(
+        "timestamp", ascending=False
+    ).head(limit)
+
+    results = []
+    for idx, row in priority.iterrows():
+        timestamp = row["timestamp"]
+        time_label = timestamp.strftime("%H:%M") if pd.notna(timestamp) else "Unknown"
+        results.append(
+            {
+                "id": int(idx),
+                "title": _describe_event(row),
+                "detail": f"{str(row['source']).capitalize()} • {row['severity']} • {time_label}",
+                "severity": row["severity"],
+            }
+        )
+    return results
 
 @app.get("/api/siem/total-count")
 def get_total_event_count():
