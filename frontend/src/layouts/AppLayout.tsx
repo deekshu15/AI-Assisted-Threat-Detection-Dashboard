@@ -7,14 +7,12 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 import Breadcrumbs from "./Breadcrumbs";
-import SearchBar from "./SearchBar";
 
 function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const location = useLocation();
-  const showSearchRow = location.pathname === "/dashboard";
+  useLocation();
 
   return (
     <Box
@@ -62,7 +60,6 @@ function AppLayout() {
           }}
         >
           <Box sx={{ maxWidth: 1440, mx: "auto", width: "100%" }}>
-            {showSearchRow && <SearchBar />}
             <Breadcrumbs />
             <Outlet />
           </Box>

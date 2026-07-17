@@ -1,31 +1,37 @@
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Container, Grid, Link, Stack, TextField, Typography } from "@mui/material";
-import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
-import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
-import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
-import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
-import SummarizeRoundedIcon from "@mui/icons-material/SummarizeRounded";
-import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
-import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
+import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
+import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
+import SummarizeRoundedIcon from "@mui/icons-material/SummarizeRounded";
+import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import XIcon from "@mui/icons-material/X";
+import { Box, Button, Collapse, Container, Grid, IconButton, Link, Stack, TextField, Typography, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { SiGitbook } from "react-icons/si";
 
 import GlassSurface from "../components/ui/GlassSurface";
+import { useThemeMode } from "../theme/ThemeModeContext";
 
 const features = [
   {
     title: "Operational clarity",
     description: "Turn scattered telemetry into a calm, guided view of the threats that matter most.",
-    icon: DashboardRoundedIcon,
+    icon: InsightsRoundedIcon,
   },
   {
     title: "Focused intelligence",
     description: "Layer context, detections, and responses into one premium workflow for analysts.",
-    icon: InsightsRoundedIcon,
+    icon: AutoAwesomeRoundedIcon,
   },
   {
     title: "Trusted protections",
@@ -34,7 +40,7 @@ const features = [
   },
   {
     title: "Real-time alerting",
-    description: "Receive instant, prioritized notifications the moment a credible threat is detected.",
+    description: "Get instant, prioritized notifications the moment a credible threat is detected.",
     icon: NotificationsActiveRoundedIcon,
   },
   {
@@ -44,19 +50,52 @@ const features = [
   },
   {
     title: "Actionable reporting",
-    description: "Generate export-ready summaries for leadership, compliance, and executive reviews.",
+    description: "Auto-generated, exportable summaries for leadership and compliance reviews.",
     icon: SummarizeRoundedIcon,
   },
 ];
 
-const stats = [
+const aboutStats = [
   { label: "Teams protected", value: "500+" },
   { label: "Uptime", value: "99.9%" },
+  { label: "24/7 monitoring", value: "Always on" },
   { label: "Avg. response", value: "10 min" },
+];
+
+const footerGroups = [
+  {
+    title: "Product",
+    links: [
+      { label: "Features", href: "#features" },
+      { label: "Pricing", href: "#feedback" },
+      { label: "Security", href: "#about" },
+      { label: "Changelog", href: "#feedback" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "#about" },
+      { label: "Careers", href: "#feedback" },
+      { label: "Blog", href: "#features" },
+      { label: "Contact", href: "#feedback" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Docs", href: "#features" },
+      { label: "Support", href: "#feedback" },
+      { label: "Feedback", href: "#feedback" },
+      { label: "Status", href: "#about" },
+    ],
+  },
 ];
 
 function LandingPage() {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const { mode, toggleColorMode } = useThemeMode();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [revealed, setRevealed] = useState({ features: false, about: false, feedback: false });
@@ -69,6 +108,14 @@ function LandingPage() {
     ],
     []
   );
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    setMenuOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -84,7 +131,7 @@ function LandingPage() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const id = entry.target.id as keyof typeof revealed;
-            setRevealed((prev) => ({ ...prev, [id]: true }));
+            setRevealed((current) => ({ ...current, [id]: true }));
           }
         });
       },
@@ -93,235 +140,422 @@ function LandingPage() {
 
     sections.forEach((section) => section && observer.observe(section));
     return () => observer.disconnect();
-  }, [revealed]);
+  }, []);
+
+  const navAction = (href: string) => {
+    if (href.startsWith("#")) {
+      scrollToSection(href.slice(1));
+      return;
+    }
+    navigate(href);
+    setMenuOpen(false);
+  };
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default", color: "text.primary" }}>
-      <Box component="header" sx={{ position: "sticky", top: 0, zIndex: 1200, px: { xs: 2, md: 4 }, py: 1.5 }}>
+    <Box sx={{ minHeight: "100vh", color: "text.primary", position: "relative", overflow: "hidden" }}>
+      <Box
+        sx={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          background: theme.palette.mode === "dark"
+            ? "radial-gradient(circle at 18% 18%, rgba(79, 93, 255, 0.20), transparent 28%), radial-gradient(circle at 82% 14%, rgba(46, 158, 142, 0.14), transparent 24%), radial-gradient(circle at 50% 86%, rgba(79, 93, 255, 0.10), transparent 26%)"
+            : "radial-gradient(circle at 18% 18%, rgba(79, 93, 255, 0.12), transparent 28%), radial-gradient(circle at 82% 14%, rgba(46, 158, 142, 0.10), transparent 24%), radial-gradient(circle at 50% 86%, rgba(79, 93, 255, 0.08), transparent 26%)",
+          opacity: 0.95,
+        }}
+      />
+
+      <Box component="header" sx={{ position: "sticky", top: 0, zIndex: 1300, px: { xs: 1.5, md: 3 }, pt: { xs: 1.5, md: 2 }, pb: 1.5 }}>
         <Container maxWidth="xl">
           <GlassSurface
             sx={{
               px: { xs: 2, md: 3 },
-              py: 1.5,
+              py: scrolled ? { xs: 1.25, md: 1.35 } : { xs: 1.5, md: 1.6 },
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              transition: "all 180ms ease",
-              transform: scrolled ? "scale(0.985)" : "scale(1)",
-              boxShadow: scrolled ? "0 18px 42px rgba(2, 6, 23, 0.34)" : "0 16px 36px rgba(2, 6, 23, 0.26)",
+              gap: 2.5,
+              transform: scrolled ? "translateY(-1px) scale(0.99)" : "translateY(0) scale(1)",
+              transition: "all 200ms ease",
+              backdropFilter: scrolled ? "blur(24px)" : "blur(16px)",
+              boxShadow: scrolled ? "0 24px 56px rgba(2, 6, 23, 0.38)" : "0 16px 36px rgba(2, 6, 23, 0.28)",
             }}
           >
-            <Stack direction="row" spacing={1.25} alignItems="center">
-              <Box sx={{ width: 42, height: 42, borderRadius: "50%", bgcolor: "primary.main", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
+            <Button
+              onClick={() => navigate("/")}
+              sx={{
+                p: 0,
+                minWidth: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 1.4,
+                color: "inherit",
+                textAlign: "left",
+                "&:hover": { backgroundColor: "transparent" },
+              }}
+            >
+              <Box sx={{ width: 44, height: 44, borderRadius: "50%", bgcolor: "primary.main", display: "flex", alignItems: "center", justifyContent: "center", color: "#F5F6F8", boxShadow: "0 14px 32px rgba(79,93,255,0.30)" }}>
                 <ShieldRoundedIcon />
               </Box>
-              <Box>
-                <Typography fontWeight={800}>Northstar Security</Typography>
-                <Typography variant="caption" color="text.secondary">Focused defense for modern security teams</Typography>
-              </Box>
-            </Stack>
-
-            <Stack direction="row" spacing={2} alignItems="center" sx={{ display: { xs: "none", md: "flex" } }}>
-              {navItems.map((item) => (
-                <Link key={item.label} href={item.href} underline="none" color="text.secondary" sx={{ transition: "color 160ms ease", "&:hover": { color: "primary.main" } }}>
-                  {item.label}
-                </Link>
-              ))}
-              <Button variant="outlined" color="primary" onClick={() => navigate("/dashboard")}>Sign In</Button>
-              <Button variant="contained" color="primary" onClick={() => navigate("/dashboard")}>Sign Up</Button>
-            </Stack>
-
-            <Button variant="text" sx={{ display: { xs: "inline-flex", md: "none" }, minWidth: 0 }} onClick={() => setMenuOpen((value) => !value)}>
-              {menuOpen ? <CloseRoundedIcon /> : <MenuRoundedIcon />}
-            </Button>
-          </GlassSurface>
-          {menuOpen && (
-            <GlassSurface sx={{ mt: 1.25, p: 2, display: { xs: "flex", md: "none" }, flexDirection: "column", gap: 1.25 }}>
-              {navItems.map((item) => (
-                <Link key={item.label} href={item.href} underline="none" color="text.secondary" onClick={() => setMenuOpen(false)}>
-                  {item.label}
-                </Link>
-              ))}
-              <Button variant="contained" color="primary" onClick={() => navigate("/dashboard")}>Open workspace</Button>
-            </GlassSurface>
-          )}
-        </Container>
-      </Box>
-
-      <Box sx={{ py: { xs: 7, md: 12 }, position: "relative", overflow: "hidden" }}>
-        <Box sx={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 15%, rgba(79,93,255,0.18), transparent 30%), radial-gradient(circle at 80% 20%, rgba(46,158,142,0.14), transparent 24%)" }} />
-        <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
-          <Stack spacing={3} alignItems="center" textAlign="center" sx={{ maxWidth: 900, mx: "auto" }}>
-            <Box sx={{ display: "inline-flex", alignItems: "center", gap: 1, px: 1.5, py: 0.75, borderRadius: 999, bgcolor: "rgba(79,93,255,0.16)", color: "primary.light" }}>
-              <AutoAwesomeRoundedIcon fontSize="small" />
-              <Typography variant="body2" fontWeight={700}>Premium intelligence for modern teams</Typography>
-            </Box>
-            <Typography variant="h2" sx={{ fontWeight: 800, lineHeight: 1.05, fontSize: { xs: "2.4rem", md: "3.6rem", lg: "4.2rem" } }}>
-              Calm, confident defense for every alert that matters.
-            </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 700, lineHeight: 1.7, fontSize: { xs: "1rem", md: "1.15rem" } }}>
-              Northstar helps security leaders align detection, response, and continuity in one polished workspace designed to feel focused rather than frantic.
-            </Typography>
-
-            <GlassSurface sx={{ maxWidth: 760, px: { xs: 3, md: 4 }, py: { xs: 3, md: 3.5 }, textAlign: "center" }}>
-              <Typography variant="h5" sx={{ fontStyle: "italic", lineHeight: 1.7, color: "text.primary" }}>
-                “Northstar gave our SOC the clarity we had been missing for years.”
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1.2 }}>
-                Security Director · Fortune 500 Financial Firm
-              </Typography>
-            </GlassSurface>
-
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
-              <Button variant="contained" color="primary" size="large" endIcon={<ArrowForwardRoundedIcon />} onClick={() => navigate("/dashboard")}>
-                Sign In / Sign Up
-              </Button>
-              <Button variant="outlined" color="primary" size="large" href="#features">
-                Explore features
-              </Button>
-            </Stack>
-          </Stack>
-        </Container>
-      </Box>
-
-      <Box id="features" sx={{ py: { xs: 6, md: 8 } }}>
-        <Container maxWidth="xl">
-          <Stack spacing={2} sx={{ mb: 4, maxWidth: 700 }}>
-            <Typography variant="overline" color="primary.light" fontWeight={700}>FEATURES</Typography>
-            <Typography variant="h3" fontWeight={800}>Crafted for calm, confident operations.</Typography>
-          </Stack>
-          <Grid container spacing={3}>
-            {features.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <Grid key={feature.title} size={{ xs: 12, md: 6, lg: 4 }}>
-                  <GlassSurface
-                    sx={{
-                      p: 3,
-                      height: "100%",
-                      transition: "transform 180ms ease, box-shadow 180ms ease",
-                      opacity: revealed.features ? 1 : 0,
-                      transform: revealed.features ? "translateY(0)" : "translateY(24px)",
-                      "&:hover": { transform: "translateY(-4px)", boxShadow: "0 24px 44px rgba(2, 6, 23, 0.28)" },
-                    }}
-                  >
-                    <Box sx={{ width: 44, height: 44, borderRadius: 2.5, bgcolor: "rgba(79,93,255,0.16)", display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
-                      <Icon sx={{ color: "primary.light" }} />
-                    </Box>
-                    <Typography variant="h6" fontWeight={700} sx={{ mb: 1 }}>{feature.title}</Typography>
-                    <Typography color="text.secondary">{feature.description}</Typography>
-                  </GlassSurface>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Container>
-      </Box>
-
-      <Box id="about" sx={{ py: { xs: 6, md: 8 } }}>
-        <Container maxWidth="xl">
-          <Grid container spacing={3} alignItems="stretch">
-            <Grid size={{ xs: 12, lg: 7 }}>
-              <GlassSurface sx={{ p: { xs: 3, md: 4 }, height: "100%" }}>
-                <Typography variant="overline" color="primary.light" fontWeight={700}>ABOUT US</Typography>
-                <Typography variant="h3" fontWeight={800} sx={{ mt: 1, mb: 2 }}>Built by security practitioners, for security practitioners.</Typography>
-                <Stack spacing={2.2} sx={{ color: "text.secondary", lineHeight: 1.8 }}>
-                  <Typography>
-                    Northstar was built to remove the friction that slows modern teams down: fragmented telemetry, noisy alerts, and disconnected handoffs between analysts and leadership.
-                  </Typography>
-                  <Typography>
-                    Our platform brings detection, investigation, and reporting into one calm operating layer so teams can focus on outcomes instead of juggling tools.
-                  </Typography>
-                  <Typography>
-                    The result is faster triage, stronger confidence, and a more reliable security posture for every organization we support.
-                  </Typography>
-                </Stack>
-                <Grid container spacing={2} sx={{ mt: 3 }}>
-                  {stats.map((stat) => (
-                    <Grid key={stat.label} size={{ xs: 12, sm: 4 }}>
-                      <GlassSurface sx={{ p: 2.2, textAlign: "center" }}>
-                        <Typography variant="h6" fontWeight={800}>{stat.value}</Typography>
-                        <Typography variant="caption" color="text.secondary">{stat.label}</Typography>
-                      </GlassSurface>
-                    </Grid>
-                  ))}
-                </Grid>
-              </GlassSurface>
-            </Grid>
-            <Grid size={{ xs: 12, lg: 5 }}>
-              <GlassSurface sx={{ p: { xs: 3, md: 4 }, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", gap: 2 }}>
-                <Box sx={{ width: "100%", height: 220, borderRadius: 4, background: "linear-gradient(135deg, rgba(79,93,255,0.22), rgba(46,158,142,0.18))", border: "1px solid rgba(255,255,255,0.12)", position: "relative", overflow: "hidden" }}>
-                  <Box sx={{ position: "absolute", inset: 20, borderRadius: 3, border: "1px solid rgba(255,255,255,0.18)" }} />
-                  <Box sx={{ position: "absolute", left: 28, top: 36, width: 140, height: 140, borderRadius: "50%", bgcolor: "rgba(79,93,255,0.18)" }} />
-                  <Box sx={{ position: "absolute", right: 32, bottom: 28, width: 110, height: 110, borderRadius: 3, bgcolor: "rgba(46,158,142,0.18)" }} />
-                </Box>
-                <Typography variant="subtitle1" fontWeight={700}>Security operations, reimagined.</Typography>
-                <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                  A premium experience for teams that need clarity, accountability, and confidence in every decision.
+              <Box sx={{ display: { xs: "none", sm: "block" } }}>
+                <Typography sx={{ fontWeight: 800, lineHeight: 1.1 }}>Northstar Security</Typography>
+                <Typography variant="caption" sx={{ color: "text.secondary", display: "block" }}>
+                  Focused defense for modern security teams
                 </Typography>
-              </GlassSurface>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+              </Box>
+            </Button>
 
-      <Box id="feedback" sx={{ py: { xs: 6, md: 8 } }}>
-        <Container maxWidth="xl">
-          <GlassSurface sx={{ p: { xs: 3, md: 4 }, maxWidth: 760, mx: "auto" }}>
-            <Typography variant="overline" color="primary.light" fontWeight={700}>FEEDBACK</Typography>
-            <Typography variant="h4" fontWeight={800} sx={{ mt: 0.75, mb: 1 }}>We would love to hear from you.</Typography>
-            <Typography color="text.secondary" sx={{ mb: 2.5 }}>
-              Share your priorities and we will follow up within one business day.
-            </Typography>
-            <Stack spacing={2}>
-              <TextField label="Name" fullWidth />
-              <TextField label="Email" fullWidth />
-              <TextField label="Message" multiline minRows={4} fullWidth />
-              <Button variant="contained" color="primary" startIcon={<EmailRoundedIcon />} sx={{ width: "fit-content" }}>
-                Submit feedback
+            <Stack direction="row" spacing={2.5} alignItems="center" sx={{ display: { xs: "none", md: "flex" }, flex: 1, justifyContent: "center" }}>
+              {navItems.map((item) => (
+                <Button
+                  key={item.label}
+                  onClick={() => navAction(item.href)}
+                  variant="text"
+                  sx={{ color: "text.secondary", px: 1.2, minWidth: 0, "&:hover": { color: "primary.main", backgroundColor: "transparent" } }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </Stack>
+
+            <Stack direction="row" spacing={1.1} alignItems="center" sx={{ flexShrink: 0 }}>
+              <IconButton onClick={toggleColorMode} color="primary" size="small" aria-label="Toggle color mode">
+                {mode === "dark" ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
+              </IconButton>
+              <Button variant="outlined" color="primary" onClick={() => navigate("/dashboard")} sx={{ display: { xs: "none", sm: "inline-flex" } }}>
+                Sign In
               </Button>
+              <Button variant="contained" color="primary" onClick={() => navigate("/dashboard")} sx={{ display: { xs: "none", sm: "inline-flex" } }}>
+                Sign Up
+              </Button>
+              <IconButton
+                onClick={() => setMenuOpen((value) => !value)}
+                sx={{ display: { xs: "inline-flex", md: "none" }, color: "text.primary" }}
+                aria-label="Open menu"
+              >
+                {menuOpen ? <CloseRoundedIcon /> : <MenuRoundedIcon />}
+              </IconButton>
             </Stack>
           </GlassSurface>
+
+          <Collapse in={menuOpen} timeout={180} unmountOnExit>
+            <GlassSurface sx={{ mt: 1.2, p: 2.2, display: { xs: "flex", md: "none" }, flexDirection: "column", gap: 1.3 }}>
+              {navItems.map((item) => (
+                <Button key={item.label} onClick={() => navAction(item.href)} variant="text" sx={{ justifyContent: "flex-start", color: "text.secondary" }}>
+                  {item.label}
+                </Button>
+              ))}
+              <Stack direction="row" spacing={1.2}>
+                <Button fullWidth variant="outlined" color="primary" onClick={() => navigate("/dashboard")}>
+                  Sign In
+                </Button>
+                <Button fullWidth variant="contained" color="primary" onClick={() => navigate("/dashboard")}>
+                  Sign Up
+                </Button>
+              </Stack>
+            </GlassSurface>
+          </Collapse>
         </Container>
       </Box>
 
-      <Box component="footer" sx={{ py: 6, borderTop: "1px solid", borderColor: "divider", bgcolor: "rgba(255,255,255,0.03)" }}>
+      <Box component="main" sx={{ position: "relative", zIndex: 1 }}>
+        <Box sx={{ pt: { xs: 6.5, md: 8.5 }, pb: { xs: 6, md: 8.5 } }}>
+          <Container maxWidth="lg">
+            <Stack alignItems="center" textAlign="center" spacing={2.6} sx={{ position: "relative" }}>
+              <Box sx={{ position: "absolute", inset: { xs: -16, md: -40 }, filter: "blur(36px)", opacity: 0.8, pointerEvents: "none" }}>
+                <Box sx={{ position: "absolute", top: "8%", left: "50%", transform: "translateX(-50%)", width: { xs: 220, md: 360 }, height: { xs: 220, md: 360 }, borderRadius: "50%", bgcolor: "rgba(79,93,255,0.16)" }} />
+                <Box sx={{ position: "absolute", top: "24%", right: { xs: "2%", md: "12%" }, width: { xs: 140, md: 220 }, height: { xs: 140, md: 220 }, borderRadius: "50%", bgcolor: "rgba(46,158,142,0.12)" }} />
+              </Box>
+
+              <Box sx={{ position: "relative", zIndex: 1, maxWidth: 860, mx: "auto" }}>
+                <Box sx={{ display: "inline-flex", alignItems: "center", gap: 1, px: 1.55, py: 0.75, mb: 2, borderRadius: 999, bgcolor: "rgba(79,93,255,0.14)", border: "1px solid rgba(255,255,255,0.12)", color: "primary.light" }}>
+                  <AutoAwesomeRoundedIcon fontSize="small" />
+                  <Typography variant="body2" fontWeight={700} sx={{ fontSize: "0.9rem" }}>
+                    Premium intelligence for modern teams
+                  </Typography>
+                </Box>
+
+                <Typography
+                  variant="h1"
+                  sx={{
+                    fontSize: { xs: "2.1rem", sm: "2.7rem", md: "3.35rem", lg: "4rem" },
+                    lineHeight: 1.08,
+                    fontWeight: 800,
+                    letterSpacing: "-0.035em",
+                    maxWidth: 820,
+                    mx: "auto",
+                  }}
+                >
+                  Calm, confident defense for every alert that matters.
+                </Typography>
+
+                <Typography variant="h6" sx={{ mt: 1.8, mx: "auto", maxWidth: 640, color: "text.secondary", lineHeight: 1.65, fontSize: { xs: "0.95rem", md: "1.02rem" } }}>
+                  Northstar Security gives leaders one polished workspace to align detection, response, and continuity without the clutter of a fragmented toolchain.
+                </Typography>
+              </Box>
+
+              <GlassSurface sx={{ position: "relative", zIndex: 1, maxWidth: 700, width: "100%", p: { xs: 2.2, md: 3 }, textAlign: "left" }}>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+                  <Typography sx={{ fontSize: { xs: 38, md: 52 }, lineHeight: 1, color: "primary.light", fontWeight: 800, mt: -0.15 }}>
+                    “
+                  </Typography>
+                  <Box>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontStyle: "italic",
+                        lineHeight: 1.7,
+                        color: "text.primary",
+                        fontSize: { xs: "1.02rem", md: "1.2rem" },
+                      }}
+                    >
+                      Northstar gave our SOC the clarity we had been missing for years.
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 1.4, color: "text.secondary" }}>
+                      Maya Chen, Security Director at a Fortune 500 financial firm
+                    </Typography>
+                  </Box>
+                </Box>
+              </GlassSurface>
+
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1.4} sx={{ position: "relative", zIndex: 1, pt: 0.5 }}>
+                <Button variant="contained" color="primary" size="medium" endIcon={<ArrowForwardRoundedIcon />} onClick={() => navigate("/dashboard")}>
+                  Sign In / Sign Up
+                </Button>
+                <Button variant="outlined" color="primary" size="medium" onClick={() => scrollToSection("features")}>
+                  Explore Features
+                </Button>
+              </Stack>
+            </Stack>
+          </Container>
+        </Box>
+
+        <Box
+          id="features"
+          sx={{
+            scrollMarginTop: { xs: 108, md: 124 },
+            py: { xs: 6, md: 8.5 },
+            opacity: revealed.features ? 1 : 0,
+            transform: revealed.features ? "translateY(0) scale(1)" : "translateY(22px) scale(0.985)",
+            transition: "opacity 260ms ease, transform 320ms ease",
+          }}
+        >
+          <Container maxWidth="xl">
+            <Stack spacing={1.2} sx={{ mb: 3.5, maxWidth: 920 }}>
+              <Typography variant="overline" sx={{ color: "primary.light", fontWeight: 800, letterSpacing: "0.14em" }}>
+                FEATURES
+              </Typography>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: 800,
+                    fontSize: { xs: "1.8rem", md: "2.35rem" },
+                    whiteSpace: { xs: "normal", md: "nowrap" },
+                  maxWidth: "none",
+                }}
+              >
+                Crafted for calm, confident operations.
+              </Typography>
+            </Stack>
+
+            <Grid container spacing={3}>
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                const isVisible = revealed.features;
+
+                return (
+                  <Grid key={feature.title} size={{ xs: 12, md: 6, lg: 4 }}>
+                    <GlassSurface
+                      sx={{
+                        p: 3,
+                        height: "100%",
+                        transition: "transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease, opacity 220ms ease",
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? "translateY(0) scale(1)" : "translateY(26px) scale(0.94)",
+                        transitionDelay: `${index * 70}ms`,
+                        "&:hover": {
+                          transform: "translateY(-6px) scale(1.01)",
+                          boxShadow: "0 28px 52px rgba(2, 6, 23, 0.34)",
+                        },
+                      }}
+                    >
+                      <Box sx={{ width: 48, height: 48, borderRadius: 3, bgcolor: "rgba(79,93,255,0.14)", border: "1px solid rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center", mb: 2.2 }}>
+                        <Icon sx={{ color: "primary.light" }} />
+                      </Box>
+                      <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+                        {feature.title}
+                      </Typography>
+                      <Typography sx={{ color: "text.secondary", lineHeight: 1.7 }}>
+                        {feature.description}
+                      </Typography>
+                    </GlassSurface>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Container>
+        </Box>
+
+        <Box id="about" sx={{ scrollMarginTop: { xs: 108, md: 124 }, py: { xs: 6, md: 8.5 }, opacity: revealed.about ? 1 : 0, transform: revealed.about ? "translateY(0)" : "translateY(18px)", transition: "opacity 260ms ease, transform 320ms ease" }}>
+          <Container maxWidth="xl">
+            <Stack spacing={1.2} sx={{ mb: 3.5, maxWidth: 760, mx: "auto", textAlign: "center", alignItems: "center" }}>
+              <Typography variant="overline" sx={{ color: "primary.light", fontWeight: 800, letterSpacing: "0.14em" }}>
+                ABOUT US
+              </Typography>
+              <Typography variant="h3" sx={{ fontWeight: 800, fontSize: { xs: "1.8rem", md: "2.35rem" } }}>
+                Built by security practitioners, for security practitioners.
+              </Typography>
+            </Stack>
+
+            <Grid container spacing={4} justifyContent="center">
+              <Grid size={{ xs: 12, lg: 8, xl: 7 }}>
+                <GlassSurface sx={{ p: { xs: 3, md: 4 }, height: "100%", maxWidth: 760, mx: "auto" }}>
+                  <Stack spacing={2.2} sx={{ color: "text.secondary", lineHeight: 1.8, textAlign: "center", alignItems: "center" }}>
+                    <Typography>
+                      Northstar was built to remove the friction that slows modern teams down: fragmented telemetry, noisy alerts, and disconnected handoffs between analysts and leadership.
+                    </Typography>
+                    <Typography>
+                      The platform brings detection, investigation, and reporting into one calm operating layer so teams can focus on outcomes instead of juggling tools.
+                    </Typography>
+                    <Typography>
+                      The result is faster triage, stronger confidence, and a more reliable security posture for every organization we support.
+                    </Typography>
+                  </Stack>
+
+                  <Grid container spacing={2} sx={{ mt: 3, justifyContent: "center" }}>
+                    {aboutStats.map((stat) => (
+                      <Grid key={stat.label} size={{ xs: 12, sm: 6, md: 3 }}>
+                        <GlassSurface sx={{ p: 2.2, textAlign: "center", height: "100%", background: "rgba(255,255,255,0.05)" }}>
+                          <Typography variant="h6" sx={{ fontWeight: 800 }}>
+                            {stat.value}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                            {stat.label}
+                          </Typography>
+                        </GlassSurface>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </GlassSurface>
+              </Grid>
+            </Grid>
+          </Container>
+        </Box>
+
+        <Box id="feedback" sx={{ scrollMarginTop: { xs: 108, md: 124 }, py: { xs: 7, md: 10 }, opacity: revealed.feedback ? 1 : 0, transform: revealed.feedback ? "translateY(0)" : "translateY(18px)", transition: "opacity 260ms ease, transform 320ms ease" }}>
+          <Container maxWidth="lg">
+            <GlassSurface sx={{ p: { xs: 3, md: 4.2 }, maxWidth: 860, mx: "auto" }}>
+              <Stack spacing={1.2} sx={{ mb: 2.5 }}>
+                <Typography variant="overline" sx={{ color: "primary.light", fontWeight: 800, letterSpacing: "0.14em" }}>
+                  FEEDBACK
+                </Typography>
+                <Typography variant="h3" sx={{ fontWeight: 800, fontSize: { xs: "2rem", md: "2.8rem" } }}>
+                  We&apos;d love to hear from you.
+                </Typography>
+                <Typography sx={{ color: "text.secondary", maxWidth: 620, lineHeight: 1.75 }}>
+                  Share your priorities and we&apos;ll follow up within one business day.
+                </Typography>
+              </Stack>
+
+              <Grid container spacing={2.2}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField label="Name" fullWidth />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <TextField label="Email" fullWidth />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <TextField label="Message" multiline minRows={5} fullWidth />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Button variant="contained" color="primary" size="large" startIcon={<EmailRoundedIcon />} sx={{ width: "fit-content" }}>
+                    Submit feedback
+                  </Button>
+                </Grid>
+              </Grid>
+            </GlassSurface>
+          </Container>
+        </Box>
+      </Box>
+
+      <Box component="footer" sx={{ mt: 4, px: { xs: 2, md: 4 }, pb: 3, position: "relative", zIndex: 1 }}>
         <Container maxWidth="xl">
-          <Grid container spacing={4}>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Stack spacing={1.2}>
-                <Typography fontWeight={800}>Northstar Security</Typography>
-                <Typography variant="body2" color="text.secondary">Focused defense for modern security teams.</Typography>
-              </Stack>
+          <Box
+            sx={{
+              borderTop: "1px solid rgba(255,255,255,0.12)",
+              background: theme.palette.mode === "dark"
+                ? "linear-gradient(180deg, rgba(16,21,28,0.72), rgba(11,15,20,0.94))"
+                : "linear-gradient(180deg, rgba(255,255,255,0.72), rgba(245,247,255,0.92))",
+              backdropFilter: "blur(18px)",
+              WebkitBackdropFilter: "blur(18px)",
+              borderRadius: 4,
+              border: "1px solid rgba(255,255,255,0.10)",
+              boxShadow: theme.palette.mode === "dark" ? "0 24px 56px rgba(2, 6, 23, 0.32)" : "0 24px 56px rgba(15, 23, 42, 0.12)",
+              p: { xs: 3, md: 4 },
+            }}
+          >
+            <Grid container spacing={4}>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Stack spacing={1.5}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.4 }}>
+                    <Box sx={{ width: 42, height: 42, borderRadius: "50%", bgcolor: "primary.main", display: "flex", alignItems: "center", justifyContent: "center", color: "#F5F6F8" }}>
+                      <ShieldRoundedIcon />
+                    </Box>
+                    <Box>
+                      <Typography sx={{ fontWeight: 800 }}>Northstar Security</Typography>
+                      <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                        Focused defense for modern security teams
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Typography sx={{ color: "text.secondary", maxWidth: 320, lineHeight: 1.75 }}>
+                    One calm workspace for security leaders, analysts, and response teams.
+                  </Typography>
+
+                  <Stack direction="row" spacing={1.1}>
+                    <IconButton color="primary" aria-label="LinkedIn">
+                      <LinkedInIcon />
+                    </IconButton>
+                    <IconButton color="primary" aria-label="X">
+                      <XIcon />
+                    </IconButton>
+                    <IconButton color="primary" aria-label="GitHub">
+                      <GitHubIcon />
+                    </IconButton>
+                    <IconButton color="primary" aria-label="Docs">
+                      <SiGitbook size={20} />
+                    </IconButton>
+                  </Stack>
+                </Stack>
+              </Grid>
+
+              {footerGroups.map((group) => (
+                <Grid key={group.title} size={{ xs: 12, sm: 4, md: 2 }}>
+                  <Stack spacing={1.4}>
+                    <Typography sx={{ fontWeight: 800 }}>{group.title}</Typography>
+                    <Stack spacing={1.1}>
+                      {group.links.map((link) => (
+                        <Link key={link.label} href={link.href} underline="none" color="text.secondary" sx={{ width: "fit-content", transition: "color 160ms ease", "&:hover": { color: "primary.main" } }}>
+                          {link.label}
+                        </Link>
+                      ))}
+                    </Stack>
+                  </Stack>
+                </Grid>
+              ))}
             </Grid>
-            <Grid size={{ xs: 12, md: 2 }}>
-              <Typography fontWeight={700} sx={{ mb: 1.2 }}>Product</Typography>
-              <Stack spacing={1}>
-                {navItems.map((item) => (
-                  <Link key={item.label} href={item.href} underline="none" color="text.secondary">
-                    {item.label}
-                  </Link>
-                ))}
+
+            <Box sx={{ mt: 4, pt: 2.5, borderTop: "1px solid rgba(255,255,255,0.10)", display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", alignItems: { xs: "flex-start", sm: "center" }, gap: 1.5 }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                © 2026 Northstar Security. All rights reserved.
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Link href="#" underline="none" color="text.secondary">Privacy Policy</Link>
+                <Link href="#" underline="none" color="text.secondary">Terms of Service</Link>
               </Stack>
-            </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <Typography fontWeight={700} sx={{ mb: 1.2 }}>Company</Typography>
-              <Stack spacing={1}>
-                <Link href="#about" underline="none" color="text.secondary">About</Link>
-                <Link href="#feedback" underline="none" color="text.secondary">Contact</Link>
-              </Stack>
-            </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
-              <Typography fontWeight={700} sx={{ mb: 1.2 }}>Resources</Typography>
-              <Stack spacing={1}>
-                <Link href="#features" underline="none" color="text.secondary">Platform overview</Link>
-                <Link href="/dashboard" underline="none" color="text.secondary">Sign in</Link>
-              </Stack>
-            </Grid>
-          </Grid>
-          <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 3 }}>
-            © 2026 Northstar Security. All rights reserved.
-          </Typography>
+            </Box>
+          </Box>
         </Container>
       </Box>
     </Box>

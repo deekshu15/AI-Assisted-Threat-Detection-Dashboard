@@ -2,7 +2,7 @@ import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 
-import { AppBar, IconButton, Stack, Tab, Tabs, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, IconButton, Tab, Tabs, Toolbar, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import NotificationDrawer from "./NotificationDrawer";
@@ -39,17 +39,22 @@ function Header() {
       }}
     >
       <Toolbar sx={{ minHeight: 82, px: { xs: 2, md: 4 }, justifyContent: "space-between", gap: 3 }}>
-        <Stack direction="row" spacing={1.25} alignItems="center" sx={{ flexShrink: 0 }}>
-          <ShieldRoundedIcon color="primary" />
-          <Stack spacing={0}>
-            <Typography variant="subtitle1" fontWeight={800} color="primary">
-              Northstar Threat Command
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Security Operations Center
-            </Typography>
-          </Stack>
-        </Stack>
+        <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+          <Box
+            sx={{
+              width: 42,
+              height: 42,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              bgcolor: "rgba(79,93,255,0.16)",
+              border: "1px solid rgba(79,93,255,0.22)",
+            }}
+          >
+            <ShieldRoundedIcon color="primary" />
+          </Box>
+        </Box>
 
         <Tabs
           value={activeTab}
@@ -74,13 +79,13 @@ function Header() {
           ))}
         </Tabs>
 
-        <Stack direction="row" spacing={1.25} alignItems="center" sx={{ flexShrink: 0 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, flexShrink: 0 }}>
           <IconButton onClick={toggleColorMode} color="primary" size="small">
             {mode === "dark" ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
           </IconButton>
           <NotificationDrawer />
           <UserMenu />
-        </Stack>
+        </Box>
       </Toolbar>
     </AppBar>
   );

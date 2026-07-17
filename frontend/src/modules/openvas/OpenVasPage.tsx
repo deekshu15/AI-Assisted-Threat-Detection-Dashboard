@@ -1,0 +1,269 @@
+import { useEffect, useMemo, useState } from "react";
+
+import BookOutlinedIcon from "@mui/icons-material/BookOutlined";
+import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
+import PowerOffRoundedIcon from "@mui/icons-material/PowerOffRounded";
+import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from "@mui/material";
+
+import GlassSurface from "../../components/ui/GlassSurface";
+
+type OpenVasConfig = {
+  target: string;
+  profile: string;
+  port: string;
+};
+
+type ScanState = "disconnected" | "connected" | "scanning";
+
+const STORAGE_KEY = "dashboard-openvas-config";
+const DOCS_URL = "https://openvas.org/";
+
+const defaultConfig: OpenVasConfig = {
+  target: "10.0.0.0/24",
+  profile: "Full and fast",
+  port: "22,80,443",
+};
+
+function readConfig(): OpenVasConfig {
+  try {
+    const rawValue = window.localStorage.getItem(STORAGE_KEY);
+    if (!rawValue) {
+      return defaultConfig;
+    }
+
+    const parsed = JSON.parse(rawValue) as Partial<OpenVasConfig>;
+
+    return {
+      target: typeof parsed.target === "string" && parsed.target.trim() ? parsed.target : defaultConfig.target,
+      profile: typeof parsed.profile === "string" && parsed.profile.trim() ? parsed.profile : defaultConfig.profile,
+      port: typeof parsed.port === "string" && parsed.port.trim() ? parsed.port : defaultConfig.port,
+    };
+  } catch {
+    return defaultConfig;
+  }
+}
+
+function OpenVasPage() {
+  const [config, setConfig] = useState<OpenVasConfig>(defaultConfig);
+  const [scanState, setScanState] = useState<ScanState>("disconnected");
+  const [configOpen, setConfigOpen] = useState(false);
+  const [draft, setDraft] = useState<OpenVasConfig>(defaultConfig);
+  const [scanMessage, setScanMessage] = useState("Ready to scan the current target.");
+
+  useEffect(() => {
+    const storedConfig = readConfig();
+    setConfig(storedConfig);
+    setDraft(storedConfig);
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  }, [config]);
+
+  useEffect(() => {
+    if (scanState !== "scanning") {
+      return undefined;
+    }
+
+    setScanMessage(`Scanning ${config.target} with ${config.profile}...`);
+    const timer = window.setTimeout(() => {
+      setScanState("connected");
+      setScanMessage(`Scan completed for ${config.target}. No critical issues were found in the simulated run.`);
+    }, 2200);
+
+    return () => window.clearTimeout(timer);
+  }, [config.profile, config.target, scanState]);
+
+  const statusLabel = useMemo(() => {
+    if (scanState === "scanning") {
+      return "Scanning";
+    }
+
+    if (scanState === "connected") {
+      return "Connected";
+    }
+
+    return "Not Connected";
+  }, [scanState]);
+
+  const handleRunScan = () => {
+    setScanState("scanning");
+  };
+
+  const handleConfigure = () => {
+    setDraft(config);
+    setConfigOpen(true);
+  };
+
+  const handleSaveConfig = () => {
+    setConfig(draft);
+    setConfigOpen(false);
+    setScanState("connected");
+    setScanMessage(`Configuration saved for ${draft.target}. The scanner is ready.`);
+  };
+
+  const handleOpenDocs = () => {
+    window.open(DOCS_URL, "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <Box
+      sx={{
+        minHeight: "calc(100vh - 180px)",
+        px: { xs: 2, md: 3 },
+        pt: { xs: 1, md: 2 },
+        pb: { xs: 4, md: 6 },
+      }}
+    >
+      <GlassSurface
+        sx={{
+          width: "100%",
+          maxWidth: 840,
+          mx: "auto",
+          mt: 0.5,
+          px: { xs: 2.5, md: 4.5 },
+          py: { xs: 2.8, md: 4 },
+          borderRadius: 4,
+          background: "rgba(8, 14, 28, 0.84)",
+          border: "1px solid rgba(0, 198, 255, 0.28)",
+          boxShadow: "0 30px 72px rgba(0, 0, 0, 0.34)",
+        }}
+      >
+        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={2} sx={{ mb: 2.6 }}>
+          <Box>
+            <Typography variant="h4" sx={{ fontWeight: 800, fontSize: { xs: "1.72rem", md: "1.9rem" } }}>
+              OpenVAS
+            </Typography>
+            <Typography sx={{ mt: 2, color: "text.secondary", fontSize: { xs: "0.98rem", md: "1.02rem" } }}>
+              Vulnerability scanner with misconfiguration and CVE detection.
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 0.75,
+              px: 1.25,
+              py: 0.45,
+              borderRadius: 999,
+              border: "1px solid rgba(239, 68, 68, 0.55)",
+              color: "#f87171",
+              bgcolor: "rgba(239, 68, 68, 0.04)",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+            }}
+          >
+            <PowerOffRoundedIcon sx={{ fontSize: 15 }} />
+            <Typography sx={{ fontSize: "0.82rem", fontWeight: 700, lineHeight: 1.1 }}>{statusLabel}</Typography>
+          </Box>
+        </Stack>
+
+        <Typography variant="caption" sx={{ display: "block", color: "#7c8ba3", letterSpacing: 1, fontWeight: 700 }}>
+          CATEGORY: VULNERABILITY ASSESSMENT
+        </Typography>
+
+        <Stack spacing={1.2} sx={{ mt: 4.2 }}>
+          <Button
+            onClick={handleRunScan}
+            disabled={scanState === "scanning"}
+            startIcon={<PlayArrowOutlinedIcon />}
+            sx={{
+              minHeight: 40,
+              borderRadius: 3,
+              textTransform: "none",
+              fontWeight: 700,
+              color: "#e5e7eb",
+              bgcolor: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.05)",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,0.07)",
+                borderColor: "rgba(255,255,255,0.12)",
+              },
+            }}
+          >
+            {scanState === "scanning" ? "Running Scan" : "Run Scan"}
+          </Button>
+
+          <Button
+            onClick={handleOpenDocs}
+            startIcon={<BookOutlinedIcon />}
+            sx={{
+              minHeight: 40,
+              borderRadius: 3,
+              textTransform: "none",
+              fontWeight: 700,
+              color: "#e5e7eb",
+              bgcolor: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.05)",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,0.07)",
+                borderColor: "rgba(255,255,255,0.12)",
+              },
+            }}
+          >
+            View Docs
+          </Button>
+
+          <Button
+            onClick={handleConfigure}
+            startIcon={<TuneRoundedIcon />}
+            sx={{
+              minHeight: 40,
+              borderRadius: 3,
+              textTransform: "none",
+              fontWeight: 700,
+              color: "#e5e7eb",
+              bgcolor: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.05)",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,0.07)",
+                borderColor: "rgba(255,255,255,0.12)",
+              },
+            }}
+          >
+            Configure
+          </Button>
+        </Stack>
+
+        <Typography sx={{ mt: 2.4, color: "#8fa3bd", fontSize: "0.92rem" }}>{scanMessage}</Typography>
+      </GlassSurface>
+
+      <Dialog open={configOpen} onClose={() => setConfigOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle sx={{ fontWeight: 800 }}>Configure OpenVAS</DialogTitle>
+        <DialogContent sx={{ pt: 1, display: "grid", gap: 2 }}>
+          <TextField
+            label="Target"
+            value={draft.target}
+            onChange={(event) => setDraft((current) => ({ ...current, target: event.target.value }))}
+            fullWidth
+          />
+          <TextField
+            label="Scan Profile"
+            value={draft.profile}
+            onChange={(event) => setDraft((current) => ({ ...current, profile: event.target.value }))}
+            fullWidth
+          />
+          <TextField
+            label="Ports"
+            value={draft.port}
+            onChange={(event) => setDraft((current) => ({ ...current, port: event.target.value }))}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2.5 }}>
+          <Button onClick={() => setConfigOpen(false)} sx={{ textTransform: "none" }}>
+            Cancel
+          </Button>
+          <Button onClick={handleSaveConfig} variant="contained" sx={{ textTransform: "none", fontWeight: 700 }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+}
+
+export default OpenVasPage;

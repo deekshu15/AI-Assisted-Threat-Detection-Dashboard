@@ -17,8 +17,6 @@ function Breadcrumbs() {
 
   const labels: Record<string, string> = {
     dashboard: "Dashboard",
-    "security-sources": "Security Sources",
-    "data-ingestion": "Data Ingestion",
     "static-data": "Static Data",
     "live-api": "Live API",
     "rest-api": "REST API",
@@ -26,17 +24,13 @@ function Breadcrumbs() {
     barcode: "Barcode",
     nmap: "Nmap",
     statistics: "Statistics",
-    "threat-detection": "Threat Detection",
-    "threat-intelligence": "Threat Intelligence",
-    "siem-monitoring": "SIEM Monitoring",
-    "incident-response": "Incident Response",
-    analytics: "Analytics",
-    reports: "Reports",
     "ai-assistant": "AI Assistant",
     "api-keys": "API Keys",
     "ai-summary": "AI Summary",
     "ai-recs": "AI Recs",
     "vulnerability-assessment": "Vulnerability Assessment",
+    openvas: "OpenVAS",
+    nikto: "Nikto",
     "penetration-testing": "Penetration Testing",
     metasploit: "Metasploit Framework",
     sqlmap: "SQLmap",
@@ -52,6 +46,14 @@ function Breadcrumbs() {
     volatility: "Volatility",
     settings: "Settings",
   };
+
+  if (location.pathname === "/dashboard") {
+    return (
+      <Typography color="text.primary" sx={{ mb: 3 }}>
+        Dashboard
+      </Typography>
+    );
+  }
 
   return (
     <MuiBreadcrumbs

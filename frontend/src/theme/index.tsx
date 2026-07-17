@@ -66,6 +66,21 @@ function createAppTheme(mode: PaletteMode = "dark") {
           },
         },
       },
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            background: isDark
+              ? "radial-gradient(circle at top left, rgba(79, 93, 255, 0.18), transparent 28%), linear-gradient(135deg, #0B0F14 0%, #10151C 100%)"
+              : "radial-gradient(circle at top left, rgba(79, 93, 255, 0.12), transparent 28%), linear-gradient(135deg, #F5F7FF 0%, #EEF2FF 100%)",
+            color: isDark ? "#E7EAF0" : "#10151C",
+            transition: "background 220ms ease, color 220ms ease",
+          },
+          "::selection": {
+            background: isDark ? "rgba(79, 93, 255, 0.28)" : "rgba(79, 93, 255, 0.20)",
+            color: isDark ? "#E7EAF0" : "#10151C",
+          },
+        },
+      },
       MuiCard: {
         styleOverrides: {
           root: {

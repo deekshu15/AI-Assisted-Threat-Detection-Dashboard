@@ -21,8 +21,6 @@ body,
 
 body {
   font-family: "Inter", sans-serif;
-  background: radial-gradient(circle at top left, rgba(79, 93, 255, 0.2), transparent 28%), linear-gradient(135deg, #0b0f14 0%, #10151c 100%);
-  color: #e7eaf0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -43,7 +41,6 @@ button {
 
 ::selection {
   background: rgba(79, 93, 255, 0.28);
-  color: #e7eaf0;
 }
 
 ::-webkit-scrollbar {

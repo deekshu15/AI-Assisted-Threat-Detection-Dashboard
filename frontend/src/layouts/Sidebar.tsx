@@ -20,7 +20,6 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  Stack,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -44,8 +43,20 @@ function Sidebar({ onNavigate }: SidebarProps) {
     core: true,
     pages: true,
     security: true,
+    vulnerability: false,
+    penetration: false,
+    webapp: false,
+    siem: false,
+    forensics: false,
   });
   const location = useLocation();
+
+  const toggleGroup = (groupKey: string) => {
+    setExpandedGroups((current) => ({
+      ...current,
+      [groupKey]: !(current[groupKey] ?? true),
+    }));
+  };
 
   const renderNavItem = (item: NavigationItem, level = 0) => {
     const Icon = item.icon;
@@ -58,17 +69,7 @@ function Sidebar({ onNavigate }: SidebarProps) {
         <Box key={item.label}>
           <ListItemButton
             onClick={() => {
-              if (item.groupKey) {
-                const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-                  core: true,
-                  pages: true,
-                  security: true,
-                  penetration: false,
-                  webapp: false,
-                  siem: false,
-                  forensics: false,
-                });
-              }
+              if (item.groupKey) toggleGroup(item.groupKey);
             }}
             sx={{
               mx: 1.25,
@@ -88,7 +89,13 @@ function Sidebar({ onNavigate }: SidebarProps) {
             )}
             {!collapsed && (
               <>
-                <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: 600 }} />
+                <ListItemText
+                  primary={
+                    <Typography component="span" sx={{ fontWeight: 600 }}>
+                      {item.label}
+                    </Typography>
+                  }
+                />
                 {isExpanded ? <ExpandLessRounded fontSize="small" /> : <ExpandMoreRounded fontSize="small" />}
               </>
             )}
@@ -135,7 +142,15 @@ function Sidebar({ onNavigate }: SidebarProps) {
               <Icon />
             </ListItemIcon>
           )}
-          {!collapsed && <ListItemText primary={item.label} primaryTypographyProps={{ fontWeight: isActive ? 700 : 500 }} />}
+          {!collapsed && (
+            <ListItemText
+              primary={
+                <Typography component="span" sx={{ fontWeight: isActive ? 700 : 500 }}>
+                  {item.label}
+                </Typography>
+              }
+            />
+          )}
         </ListItemButton>
       </Tooltip>
     );
@@ -155,27 +170,27 @@ function Sidebar({ onNavigate }: SidebarProps) {
         boxShadow: theme.palette.mode === "dark" ? "12px 0 32px rgba(2, 6, 23, 0.28)" : "12px 0 32px rgba(15, 23, 42, 0.08)",
       })}
     >
-      <Stack direction="row" alignItems="center" justifyContent={collapsed ? "center" : "space-between"} sx={{ p: 2.5 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "space-between", p: 2.5 }}>
         {!collapsed && (
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Avatar sx={{ bgcolor: "primary.main", width: 46, height: 46, fontWeight: 700, boxShadow: "0 10px 24px rgba(79,93,255,0.24)" }}>
               NS
             </Avatar>
             <Box>
-              <Typography fontWeight={700} fontSize={17}>
+              <Typography sx={{ fontWeight: 700, fontSize: 17 }}>
                 Northstar Console
               </Typography>
-              <Typography fontSize={12} color="text.secondary">
+              <Typography sx={{ fontSize: 12, color: "text.secondary" }}>
                 Security operations hub
               </Typography>
             </Box>
-          </Stack>
+          </Box>
         )}
 
         <IconButton onClick={() => setCollapsed(!collapsed)} sx={{ color: "inherit" }}>
           {collapsed ? <ChevronRightRounded /> : <ChevronLeftRounded />}
         </IconButton>
-      </Stack>
+      </Box>
 
       {!collapsed && (
         <Box sx={{ px: 2.5, pb: 2 }}>
@@ -215,7 +230,13 @@ function Sidebar({ onNavigate }: SidebarProps) {
             <ListItemIcon sx={{ minWidth: 38, color: "primary.main" }}>
               <SmartToyRounded fontSize="small" />
             </ListItemIcon>
-            <ListItemText primary="AI Assistant" primaryTypographyProps={{ fontWeight: 700 }} />
+            <ListItemText
+              primary={
+                <Typography component="span" sx={{ fontWeight: 700 }}>
+                  AI Assistant
+                </Typography>
+              }
+            />
             <Chip label="AI" size="small" color="primary" sx={{ height: 22, fontWeight: 700 }} />
           </ListItemButton>
         </Box>
@@ -232,13 +253,13 @@ function Sidebar({ onNavigate }: SidebarProps) {
       <Box sx={{ p: 2, textAlign: "center" }}>
         {!collapsed ? (
           <>
-            <Typography fontWeight={600}>Northstar Suite</Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography sx={{ fontWeight: 600 }}>Northstar Suite</Typography>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
               Version 1.0.0
             </Typography>
           </>
         ) : (
-          <Typography fontWeight={700}>v1</Typography>
+          <Typography sx={{ fontWeight: 700 }}>v1</Typography>
         )}
       </Box>
     </Box>
