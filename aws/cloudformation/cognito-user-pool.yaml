@@ -1,0 +1,142 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Cognito User Pool and App Client for the AI-Assisted Threat Detection
+  Dashboard (Northstar Security). Provides authentication for the
+  frontend (Sign In / Sign Up) and issues JWTs that the backend API
+  can later verify on protected endpoints.
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: northstar-threat-dashboard
+    Description: Prefix used for naming Cognito resources.
+
+  LocalDevCallbackUrl:
+    Type: String
+    Default: http://localhost:5173
+    Description: >
+      Redirect URL used during local development (Vite dev server).
+      Add your real deployed frontend URL here too once you have one,
+      as a comma-separated list is not supported directly in this
+      parameter - see the CallbackURLs list in the App Client resource
+      below, which you should extend once you have a production URL.
+
+Resources:
+
+  # ------------------------------------------------------------------
+  # User Pool - stores user identities (email + password based)
+  # ------------------------------------------------------------------
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "${ProjectName}-user-pool"
+
+      # Users sign in with their email address, not a separate username
+      UsernameAttributes:
+        - email
+
+      AutoVerifiedAttributes:
+        - email
+
+      # Password policy - adjust to your organization's requirements
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+
+      # Standard attributes collected at sign-up
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+        - Name: name
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+
+      # Email verification message customization (optional, safe default)
+      EmailVerificationSubject: "Verify your Northstar Security account"
+      EmailVerificationMessage: "Your verification code is {####}"
+
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+
+  # ------------------------------------------------------------------
+  # App Client - what your React frontend uses to talk to the User Pool
+  # ------------------------------------------------------------------
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub "${ProjectName}-web-client"
+      UserPoolId: !Ref UserPool
+
+      # No client secret - required for browser-based (public) clients
+      GenerateSecret: false
+
+      # Which auth flows this client is allowed to use.
+      # USER_PASSWORD_AUTH: simple email+password sign-in from your own
+      # custom UI (matches your existing Sign In / Sign Up buttons).
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+      # Token validity - adjust as needed
+      AccessTokenValidity: 60
+      IdTokenValidity: 60
+      RefreshTokenValidity: 30
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+
+      # OAuth / Hosted UI settings - only needed if you later use
+      # Cognito's Hosted UI instead of a fully custom sign-in form.
+      # Safe to leave configured even if unused right now.
+      SupportedIdentityProviders:
+        - COGNITO
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - !Ref LocalDevCallbackUrl
+      LogoutURLs:
+        - !Ref LocalDevCallbackUrl
+
+  # ------------------------------------------------------------------
+  # Hosted UI Domain - gives you a Cognito-hosted login page URL.
+  # Optional: only needed if you choose the Hosted UI route instead
+  # of a fully custom React sign-in form. Safe to keep either way.
+  # ------------------------------------------------------------------
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub "${ProjectName}-auth"
+      UserPoolId: !Ref UserPool
+
+Outputs:
+  UserPoolId:
+    Description: Cognito User Pool ID - needed by the frontend Amplify/Cognito SDK config
+    Value: !Ref UserPool
+
+  UserPoolClientId:
+    Description: Cognito App Client ID - needed by the frontend Amplify/Cognito SDK config
+    Value: !Ref UserPoolClient
+
+  UserPoolDomainUrl:
+    Description: Hosted UI domain (only relevant if using Cognito's Hosted UI)
+    Value: !Sub "https://${ProjectName}-auth.auth.${AWS::Region}.amazoncognito.com"
+
+  Region:
+    Description: AWS region this User Pool was deployed in - needed by the frontend config
+    Value: !Ref AWS::Region

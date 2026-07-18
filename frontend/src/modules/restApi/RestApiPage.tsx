@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import PublicRoundedIcon from "@mui/icons-material/PublicRounded";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 
@@ -162,29 +161,6 @@ function RestApiPage() {
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.34)",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.4, mb: 3 }}>
-          <Box
-            sx={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#a855f7",
-              bgcolor: "rgba(168, 85, 247, 0.08)",
-              border: "1px solid rgba(168, 85, 247, 0.22)",
-              flexShrink: 0,
-            }}
-          >
-            <PublicRoundedIcon sx={{ fontSize: 20 }} />
-          </Box>
-
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            REST API Tester
-          </Typography>
-        </Box>
-
         <Box sx={{ display: "grid", gap: 2.2 }}>
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "120px 1fr" }, gap: 1 }}>
             <TextField

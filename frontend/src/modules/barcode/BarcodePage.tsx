@@ -4,7 +4,6 @@ import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FileUploadOutlinedIcon from "@mui/icons-material/FileUploadOutlined";
-import QrCode2OutlinedIcon from "@mui/icons-material/QrCode2Outlined";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 
@@ -369,29 +368,6 @@ function BarcodePage() {
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.34)",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.4, mb: 3 }}>
-          <Box
-            sx={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#2dd4bf",
-              bgcolor: "rgba(45, 212, 191, 0.08)",
-              border: "1px solid rgba(45, 212, 191, 0.22)",
-              flexShrink: 0,
-            }}
-          >
-            <QrCode2OutlinedIcon sx={{ fontSize: 20 }} />
-          </Box>
-
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Barcode Threat Scanner
-          </Typography>
-        </Box>
-
         <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 1.5 }}>
           <Box
             onClick={startCameraScan}

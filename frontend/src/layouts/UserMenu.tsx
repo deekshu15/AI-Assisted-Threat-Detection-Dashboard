@@ -13,9 +13,11 @@ import {
   Typography,
 } from "@mui/material";
 import { MouseEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function UserMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const open = Boolean(anchorEl);
 
@@ -24,6 +26,17 @@ function UserMenu() {
   };
 
   const handleClose = () => setAnchorEl(null);
+
+  const handleNavigate = (path: string) => {
+    handleClose();
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    handleClose();
+    window.sessionStorage.clear();
+    navigate("/");
+  };
 
   return (
     <>
@@ -67,7 +80,7 @@ function UserMenu() {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem>
+        <MenuItem onClick={() => handleNavigate("/profile")}>
           <ListItemIcon>
             <PersonRoundedIcon fontSize="small" />
           </ListItemIcon>
@@ -75,7 +88,7 @@ function UserMenu() {
           Profile
         </MenuItem>
 
-        <MenuItem>
+        <MenuItem onClick={() => handleNavigate("/settings")}>
           <ListItemIcon>
             <SettingsRoundedIcon fontSize="small" />
           </ListItemIcon>
@@ -85,7 +98,7 @@ function UserMenu() {
 
         <Divider />
 
-        <MenuItem>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <LogoutRoundedIcon fontSize="small" />
           </ListItemIcon>

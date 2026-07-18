@@ -29,7 +29,16 @@ function AppLayout() {
         <>
           <IconButton
             onClick={() => setMobileOpen(true)}
-            sx={{ position: "fixed", top: 18, left: 18, zIndex: 1400, bgcolor: "rgba(16, 21, 28, 0.82)", backdropFilter: "blur(14px)", boxShadow: 2, color: "text.primary" }}
+            sx={(activeTheme) => ({
+              position: "fixed",
+              top: 18,
+              left: 18,
+              zIndex: 1400,
+              bgcolor: activeTheme.palette.mode === "dark" ? "rgba(16, 21, 28, 0.82)" : "rgba(255, 255, 255, 0.86)",
+              backdropFilter: "blur(14px)",
+              boxShadow: 2,
+              color: "text.primary",
+            })}
           >
             <MenuRoundedIcon />
           </IconButton>

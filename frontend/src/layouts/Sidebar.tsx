@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import navigation from "../constants/navigation";
 import type { NavigationItem } from "../types/navigation";
@@ -37,8 +37,25 @@ interface SidebarProps {
   onNavigate?: () => void;
 }
 
+function filterNavigationItems(items: NavigationItem[], searchTerm: string): NavigationItem[] {
+  return items.reduce<NavigationItem[]>((matches, item) => {
+    const children = item.children ? filterNavigationItems(item.children, searchTerm) : [];
+    const labelMatches = item.label.toLowerCase().includes(searchTerm);
+
+    if (labelMatches || children.length > 0) {
+      matches.push({
+        ...item,
+        children: item.children ? (labelMatches ? item.children : children) : undefined,
+      });
+    }
+
+    return matches;
+  }, []);
+}
+
 function Sidebar({ onNavigate }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
     core: true,
     pages: true,
@@ -50,6 +67,11 @@ function Sidebar({ onNavigate }: SidebarProps) {
     forensics: false,
   });
   const location = useLocation();
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredNavigation = useMemo(
+    () => normalizedSearch ? filterNavigationItems(navigation, normalizedSearch) : navigation,
+    [normalizedSearch],
+  );
 
   const toggleGroup = (groupKey: string) => {
     setExpandedGroups((current) => ({
@@ -62,7 +84,7 @@ function Sidebar({ onNavigate }: SidebarProps) {
     const Icon = item.icon;
     const hasChildren = Boolean(item.children?.length);
     const isActive = item.path ? location.pathname === item.path : false;
-    const isExpanded = item.groupKey ? expandedGroups[item.groupKey] ?? true : true;
+    const isExpanded = normalizedSearch || (item.groupKey ? expandedGroups[item.groupKey] ?? true : true);
 
     if (hasChildren) {
       return (
@@ -161,7 +183,10 @@ function Sidebar({ onNavigate }: SidebarProps) {
       sx={(theme) => ({
         width: collapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH,
         transition: "all .25s ease",
-        bgcolor: theme.palette.mode === "dark" ? "linear-gradient(180deg, rgba(16,21,28,0.96) 0%, rgba(11,15,20,0.96) 100%)" : "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(245,247,255,0.96) 100%)",
+        bgcolor: theme.palette.mode === "dark" ? "#10151C" : "#FFFFFF",
+        backgroundImage: theme.palette.mode === "dark"
+          ? "linear-gradient(180deg, rgba(16,21,28,0.98) 0%, rgba(11,15,20,0.98) 100%)"
+          : "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(245,247,255,0.98) 100%)",
         color: theme.palette.mode === "dark" ? "#E7EAF0" : "#0F172A",
         display: "flex",
         flexDirection: "column",
@@ -208,7 +233,14 @@ function Sidebar({ onNavigate }: SidebarProps) {
             })}
           >
             <SearchRounded fontSize="small" sx={{ color: "text.secondary", mr: 1 }} />
-            <InputBase placeholder="Search tools..." fullWidth sx={{ fontSize: 14 }} />
+            <InputBase
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search tools..."
+              inputProps={{ "aria-label": "Search navigation tools" }}
+              fullWidth
+              sx={{ fontSize: 14 }}
+            />
           </Paper>
         </Box>
       )}
@@ -245,7 +277,13 @@ function Sidebar({ onNavigate }: SidebarProps) {
       <Divider sx={{ borderColor: "divider" }} />
 
       <Box sx={{ flex: 1, overflowY: "auto", py: 2 }}>
-        <List>{navigation.map((item) => renderNavItem(item))}</List>
+        <List>
+          {filteredNavigation.length > 0 ? filteredNavigation.map((item) => renderNavItem(item)) : (
+            <Typography color="text.secondary" variant="body2" textAlign="center" px={2} py={3}>
+              No matching tools found
+            </Typography>
+          )}
+        </List>
       </Box>
 
       <Divider sx={{ borderColor: "divider" }} />

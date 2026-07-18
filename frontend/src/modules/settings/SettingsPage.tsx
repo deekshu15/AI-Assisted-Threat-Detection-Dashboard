@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
 import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import StorageRoundedIcon from "@mui/icons-material/StorageRounded";
 import { Box, Button, Chip, Stack, Switch, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -91,29 +90,6 @@ function SettingsPage() {
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.34)",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.4, mb: 2.2 }}>
-          <Box
-            sx={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#22d3ee",
-              bgcolor: "rgba(34, 211, 238, 0.08)",
-              border: "1px solid rgba(34, 211, 238, 0.22)",
-              flexShrink: 0,
-            }}
-          >
-            <SettingsRoundedIcon sx={{ fontSize: 20 }} />
-          </Box>
-
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Settings &amp; Config
-          </Typography>
-        </Box>
-
         <Stack spacing={1.4}>
           <Box sx={{ px: 2, py: 1.5, borderRadius: 3, bgcolor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>

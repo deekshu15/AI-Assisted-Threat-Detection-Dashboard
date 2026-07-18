@@ -131,35 +131,35 @@ function OpenVasPage() {
           boxShadow: "0 30px 72px rgba(0, 0, 0, 0.34)",
         }}
       >
-        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={2} sx={{ mb: 2.6 }}>
-          <Box>
+        <Box sx={{ mb: 2.6 }}>
+          <Stack direction="row" alignItems="center" spacing={1.4}>
             <Typography variant="h4" sx={{ fontWeight: 800, fontSize: { xs: "1.72rem", md: "1.9rem" } }}>
               OpenVAS
             </Typography>
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.5,
+                px: 1.05,
+                py: 0.3,
+                borderRadius: 999,
+                border: "1px solid rgba(239, 68, 68, 0.55)",
+                color: "#f87171",
+                bgcolor: "rgba(239, 68, 68, 0.04)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <PowerOffRoundedIcon sx={{ fontSize: 13 }} />
+              <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, lineHeight: 1 }}>{statusLabel}</Typography>
+            </Box>
+          </Stack>
+          <Box>
             <Typography sx={{ mt: 2, color: "text.secondary", fontSize: { xs: "0.98rem", md: "1.02rem" } }}>
               Vulnerability scanner with misconfiguration and CVE detection.
             </Typography>
           </Box>
-
-          <Box
-            sx={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 0.75,
-              px: 1.25,
-              py: 0.45,
-              borderRadius: 999,
-              border: "1px solid rgba(239, 68, 68, 0.55)",
-              color: "#f87171",
-              bgcolor: "rgba(239, 68, 68, 0.04)",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            <PowerOffRoundedIcon sx={{ fontSize: 15 }} />
-            <Typography sx={{ fontSize: "0.82rem", fontWeight: 700, lineHeight: 1.1 }}>{statusLabel}</Typography>
-          </Box>
-        </Stack>
+        </Box>
 
         <Typography variant="caption" sx={{ display: "block", color: "#7c8ba3", letterSpacing: 1, fontWeight: 700 }}>
           CATEGORY: VULNERABILITY ASSESSMENT

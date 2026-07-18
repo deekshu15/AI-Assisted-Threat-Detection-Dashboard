@@ -1,13 +1,10 @@
-import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
-import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 
-import { AppBar, Box, IconButton, Tab, Tabs, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Tab, Tabs, Toolbar, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import NotificationDrawer from "./NotificationDrawer";
 import UserMenu from "./UserMenu";
-import { useThemeMode } from "../theme/ThemeModeContext";
 
 const TOP_TABS = [
   { label: "Dashboard", path: "/dashboard" },
@@ -17,7 +14,6 @@ const TOP_TABS = [
 ];
 
 function Header() {
-  const { mode, toggleColorMode } = useThemeMode();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -33,7 +29,9 @@ function Header() {
       sx={{
         borderBottom: "1px solid",
         borderColor: "divider",
-        backgroundColor: "rgba(11, 15, 20, 0.7)",
+        backgroundColor: (theme) => theme.palette.mode === "dark"
+          ? "rgba(11, 15, 20, 0.78)"
+          : "rgba(255, 255, 255, 0.82)",
         backdropFilter: "blur(18px)",
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
@@ -80,9 +78,6 @@ function Header() {
         </Tabs>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, flexShrink: 0 }}>
-          <IconButton onClick={toggleColorMode} color="primary" size="small">
-            {mode === "dark" ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
-          </IconButton>
           <NotificationDrawer />
           <UserMenu />
         </Box>

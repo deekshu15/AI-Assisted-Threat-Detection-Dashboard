@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
-import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
@@ -20,7 +18,6 @@ import { useNavigate } from "react-router-dom";
 import { SiGitbook } from "react-icons/si";
 
 import GlassSurface from "../components/ui/GlassSurface";
-import { useThemeMode } from "../theme/ThemeModeContext";
 
 const features = [
   {
@@ -95,7 +92,6 @@ const footerGroups = [
 function LandingPage() {
   const navigate = useNavigate();
   const theme = useTheme();
-  const { mode, toggleColorMode } = useThemeMode();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [revealed, setRevealed] = useState({ features: false, about: false, feedback: false });
@@ -219,9 +215,6 @@ function LandingPage() {
             </Stack>
 
             <Stack direction="row" spacing={1.1} alignItems="center" sx={{ flexShrink: 0 }}>
-              <IconButton onClick={toggleColorMode} color="primary" size="small" aria-label="Toggle color mode">
-                {mode === "dark" ? <LightModeRoundedIcon /> : <DarkModeRoundedIcon />}
-              </IconButton>
               <Button variant="outlined" color="primary" onClick={() => navigate("/dashboard")} sx={{ display: { xs: "none", sm: "inline-flex" } }}>
                 Sign In
               </Button>

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
-import ImageSearchOutlinedIcon from "@mui/icons-material/ImageSearchOutlined";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -344,29 +343,6 @@ function ImageScanPage() {
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.34)",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.4, mb: 3 }}>
-          <Box
-            sx={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#2dd4bf",
-              bgcolor: "rgba(45, 212, 191, 0.08)",
-              border: "1px solid rgba(45, 212, 191, 0.22)",
-              flexShrink: 0,
-            }}
-          >
-            <ImageSearchOutlinedIcon sx={{ fontSize: 20 }} />
-          </Box>
-
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Image Threat Scanner
-          </Typography>
-        </Box>
-
         <Box
           onClick={openFilePicker}
           onDragEnter={(event) => {

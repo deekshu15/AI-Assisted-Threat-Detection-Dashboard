@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 
-import LanRoundedIcon from "@mui/icons-material/LanRounded";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PublicRoundedIcon from "@mui/icons-material/PublicRounded";
 import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
@@ -196,33 +195,6 @@ function NmapPage() {
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.34)",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.4, mb: 2 }}>
-          <Box
-            sx={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#22d3ee",
-              bgcolor: "rgba(34, 211, 238, 0.08)",
-              border: "1px solid rgba(34, 211, 238, 0.22)",
-              flexShrink: 0,
-            }}
-          >
-            <LanRoundedIcon sx={{ fontSize: 20 }} />
-          </Box>
-
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Nmap Scanner
-          </Typography>
-        </Box>
-
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2.2, lineHeight: 1.7 }}>
-          Network discovery & security auditing. Discovers hosts, services, and vulnerabilities.
-        </Typography>
-
         <Typography variant="caption" sx={{ display: "block", mb: 1.1, color: "#6f87a8", letterSpacing: 0.8 }}>
           Target (IP / CIDR / hostname)
         </Typography>

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 import RadioButtonCheckedOutlinedIcon from "@mui/icons-material/RadioButtonCheckedOutlined";
 import StopOutlinedIcon from "@mui/icons-material/StopOutlined";
-import WifiRoundedIcon from "@mui/icons-material/WifiRounded";
 import WifiOffRoundedIcon from "@mui/icons-material/WifiOffRounded";
 import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 
@@ -116,28 +115,6 @@ function LiveApiPage() {
           py: { xs: 3, md: 3.5 },
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.4, mb: 3 }}>
-          <Box
-            sx={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#13d8ff",
-              bgcolor: "rgba(19, 216, 255, 0.08)",
-              border: "1px solid rgba(19, 216, 255, 0.2)",
-            }}
-          >
-            <WifiRoundedIcon sx={{ fontSize: 20 }} />
-          </Box>
-
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Live API Manager
-          </Typography>
-        </Box>
-
         <Box sx={{ display: "grid", gap: 2.5 }}>
           <Box>
             <Typography variant="caption" sx={{ display: "block", mb: 1.2, letterSpacing: 1, color: "#6f87a8" }}>
