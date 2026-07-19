@@ -2,6 +2,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import AppLayout from "../layouts/AppLayout";
 import LandingPage from "../pages/LandingPage";
+import SignInPage from "../pages/SignInPage";
+import SignUpPage from "../pages/SignUpPage";
+import ProfilePage from "../pages/ProfilePage";
+import RequireAuth from "../auth/RequireAuth";
 import DashboardPage from "../modules/dashboard/DashboardPage";
 import AnalyticsPage from "../modules/analytics/AnalyticsPage";
 import DataIngestionPage from "../modules/ingestion/DataIngestionPage";
@@ -24,9 +28,12 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route element={<AppLayout />}>
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+
+        <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
           <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/ai-assistant" element={<AssistantPage />} />
           <Route path="/static-data" element={<DataIngestionPage />} />
           <Route path="/live-api" element={<LiveApiPage />} />
@@ -36,7 +43,7 @@ export default function AppRouter() {
           <Route path="/nmap" element={<NmapPage />} />
           <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="/api-keys" element={<ApiKeysPage />} />
-          <Route path="/profile" element={<PlaceholderFeaturePage title="Administrator Profile" description="Review your account role, security permissions, and profile information." stats={[{label:"Role", value:"Analyst", detail:"security operations"},{label:"Access", value:"Standard", detail:"workspace level"},{label:"Status", value:"Active", detail:"account health"}]} badge="Profile" />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/ai-summary" element={<PlaceholderFeaturePage title="AI Summary" description="Summarize current incidents, investigation progress, and response posture." stats={[{label:"Summaries", value:"48", detail:"last 24h"},{label:"Coverage", value:"89%", detail:"critical cases"},{label:"Quality", value:"4.8/5", detail:"analyst rating"}]} badge="Summary" />} />
           <Route path="/ai-recs" element={<PlaceholderFeaturePage title="AI Recs" description="Review AI-generated recommendations and operational next steps." stats={[{label:"Recommendations", value:"24", detail:"ranked"},{label:"Accepted", value:"68%", detail:"auto-accepted"},{label:"Priority", value:"High", detail:"escalation queue"}]} badge="Recs" />} />
           <Route path="/vulnerability-assessment" element={<PlaceholderFeaturePage title="Vulnerability Assessment" description="Monitor known weaknesses and remediation tracking across all monitors." stats={[{label:"Assets reviewed", value:"392", detail:"active scope"},{label:"Critical vulns", value:"11", detail:"requires patching"},{label:"Remediated", value:"76%", detail:"this quarter"}]} badge="Vulns" />} />

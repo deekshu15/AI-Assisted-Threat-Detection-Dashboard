@@ -215,10 +215,10 @@ function LandingPage() {
             </Stack>
 
             <Stack direction="row" spacing={1.1} alignItems="center" sx={{ flexShrink: 0 }}>
-              <Button variant="outlined" color="primary" onClick={() => navigate("/dashboard")} sx={{ display: { xs: "none", sm: "inline-flex" } }}>
+              <Button variant="outlined" color="primary" onClick={() => navigate("/sign-in")} sx={{ display: { xs: "none", sm: "inline-flex" } }}>
                 Sign In
               </Button>
-              <Button variant="contained" color="primary" onClick={() => navigate("/dashboard")} sx={{ display: { xs: "none", sm: "inline-flex" } }}>
+              <Button variant="contained" color="primary" onClick={() => navigate("/sign-up")} sx={{ display: { xs: "none", sm: "inline-flex" } }}>
                 Sign Up
               </Button>
               <IconButton
@@ -239,10 +239,10 @@ function LandingPage() {
                 </Button>
               ))}
               <Stack direction="row" spacing={1.2}>
-                <Button fullWidth variant="outlined" color="primary" onClick={() => navigate("/dashboard")}>
+                <Button fullWidth variant="outlined" color="primary" onClick={() => navigate("/sign-in")}>
                   Sign In
                 </Button>
-                <Button fullWidth variant="contained" color="primary" onClick={() => navigate("/dashboard")}>
+                <Button fullWidth variant="contained" color="primary" onClick={() => navigate("/sign-up")}>
                   Sign Up
                 </Button>
               </Stack>
@@ -312,7 +312,7 @@ function LandingPage() {
               </GlassSurface>
 
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1.4} sx={{ position: "relative", zIndex: 1, pt: 0.5 }}>
-                <Button variant="contained" color="primary" size="medium" endIcon={<ArrowForwardRoundedIcon />} onClick={() => navigate("/dashboard")}>
+                <Button variant="contained" color="primary" size="medium" endIcon={<ArrowForwardRoundedIcon />} onClick={() => navigate("/sign-in")}>
                   Sign In / Sign Up
                 </Button>
                 <Button variant="outlined" color="primary" size="medium" onClick={() => scrollToSection("features")}>

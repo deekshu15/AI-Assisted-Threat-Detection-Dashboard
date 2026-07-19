@@ -37,7 +37,7 @@ function PlaceholderFeaturePage({
       <Grid container spacing={3}>
         {stats.length > 0 && (
           <Grid size={{ xs: 12, lg: 8 }}>
-            <GlassSurface sx={{ p: 3, height: "100%" }}>
+            <GlassSurface sx={{ p: 3, height: "100%", transition: "border-color 180ms ease, box-shadow 180ms ease", "&:hover": { borderColor: "#22d3ee", boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18)" } }}>
               <Stack direction={{ xs: "column", md: "row" }} justifyContent="space-between" alignItems={{ xs: "flex-start", md: "center" }} spacing={2} mb={3}>
                 <Box>
                   <Typography variant="subtitle1" fontWeight={700}>
@@ -72,7 +72,7 @@ function PlaceholderFeaturePage({
         )}
 
         <Grid size={{ xs: 12, lg: stats.length > 0 ? 4 : 12 }}>
-          <GlassSurface sx={{ p: 3, height: "100%" }}>
+          <GlassSurface sx={{ p: 3, height: "100%", transition: "border-color 180ms ease, box-shadow 180ms ease", "&:hover": { borderColor: "#22d3ee", boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18)" } }}>
             <Typography variant="subtitle1" fontWeight={700} gutterBottom>
               Recommended next steps
             </Typography>
@@ -99,7 +99,7 @@ function PlaceholderFeaturePage({
             <Grid container spacing={3}>
               {widgets.map((widget) => (
                 <Grid size={{ xs: 12, md: 6, lg: 4 }} key={widget.title}>
-                  <GlassSurface sx={{ p: 3, height: "100%" }}>
+                  <GlassSurface sx={{ p: 3, height: "100%", transition: "border-color 180ms ease, box-shadow 180ms ease", "&:hover": { borderColor: "#22d3ee", boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18)" } }}>
                     <Typography variant="subtitle1" fontWeight={700} gutterBottom>
                       {widget.title}
                     </Typography>

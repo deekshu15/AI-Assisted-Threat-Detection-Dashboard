@@ -191,8 +191,12 @@ function NmapPage() {
           py: { xs: 3, md: 3.5 },
           borderRadius: 4,
           background: "rgba(8, 14, 28, 0.82)",
-          border: "1px solid rgba(0, 198, 255, 0.18)",
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.34)",
+          transition: "border-color 180ms ease, box-shadow 180ms ease",
+          "&:hover": {
+            borderColor: "#22d3ee",
+            boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18), 0 28px 70px rgba(0, 0, 0, 0.34)",
+          },
         }}
       >
         <Typography variant="caption" sx={{ display: "block", mb: 1.1, color: "#6f87a8", letterSpacing: 0.8 }}>

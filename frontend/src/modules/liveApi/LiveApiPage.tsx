@@ -109,6 +109,11 @@ function LiveApiPage() {
           border: "1px solid rgba(255,255,255,0.08)",
           bgcolor: "rgba(8, 14, 28, 0.76)",
           boxShadow: "0 30px 70px rgba(0, 0, 0, 0.32)",
+          transition: "border-color 180ms ease, box-shadow 180ms ease",
+          "&:hover": {
+            borderColor: "#22d3ee",
+            boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18), 0 30px 70px rgba(0, 0, 0, 0.32)",
+          },
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
           px: { xs: 2.5, md: 4 },

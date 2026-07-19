@@ -126,8 +126,12 @@ function NiktoPage() {
           py: { xs: 2.8, md: 4 },
           borderRadius: 4,
           background: "rgba(8, 14, 28, 0.84)",
-          border: "1px solid rgba(0, 198, 255, 0.24)",
           boxShadow: "0 30px 72px rgba(0, 0, 0, 0.34), inset 0 0 0 1px rgba(34, 211, 238, 0.06)",
+          transition: "border-color 180ms ease, box-shadow 180ms ease",
+          "&:hover": {
+            borderColor: "#22d3ee",
+            boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18), 0 30px 72px rgba(0, 0, 0, 0.34)",
+          },
         }}
       >
         <Box sx={{ mb: 2.6 }}>

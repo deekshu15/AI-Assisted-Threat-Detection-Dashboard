@@ -31,8 +31,8 @@ function DataIngestionPage() {
           onClick={() => fileInputRef.current?.click()}
           sx={{
             minHeight: { xs: 190, md: 156 },
-            borderRadius: 4,
-            border: "2px dashed rgba(0, 188, 212, 0.72)",
+            borderRadius: 0,
+            border: "2px solid rgba(148, 163, 184, 0.22)",
             bgcolor: "rgba(255,255,255,0.02)",
             display: "flex",
             alignItems: "center",
@@ -41,6 +41,12 @@ function DataIngestionPage() {
             px: 2,
             cursor: "pointer",
             overflow: "hidden",
+            transition: "border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease",
+            "&:hover": {
+              borderColor: "#22d3ee",
+              bgcolor: "rgba(34, 211, 238, 0.05)",
+              boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18)",
+            },
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", maxWidth: 420 }}>

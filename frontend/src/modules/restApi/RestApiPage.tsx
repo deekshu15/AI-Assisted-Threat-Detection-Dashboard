@@ -159,6 +159,11 @@ function RestApiPage() {
           background: "rgba(8, 14, 28, 0.82)",
           border: "1px solid rgba(255,255,255,0.06)",
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.34)",
+          transition: "border-color 180ms ease, box-shadow 180ms ease",
+          "&:hover": {
+            borderColor: "#a855f7",
+            boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.18), 0 28px 70px rgba(0, 0, 0, 0.34)",
+          },
         }}
       >
         <Box sx={{ display: "grid", gap: 2.2 }}>
@@ -343,6 +348,11 @@ function RestApiPage() {
             p: { xs: 2.2, md: 3 },
             borderRadius: 4,
             background: "rgba(8, 14, 28, 0.68)",
+            transition: "border-color 180ms ease, box-shadow 180ms ease",
+            "&:hover": {
+              borderColor: "#a855f7",
+              boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.18)",
+            },
           }}
         >
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, alignItems: "center", justifyContent: "space-between", mb: 2 }}>

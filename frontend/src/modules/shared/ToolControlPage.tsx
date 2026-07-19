@@ -58,8 +58,12 @@ function ToolControlPage({ title, description, category, docsUrl, ready = false 
           p: { xs: 3, md: 3.75 },
           borderRadius: 3,
           background: "rgba(8, 14, 28, 0.78)",
-          border: "1px solid rgba(100, 142, 189, 0.16)",
           boxShadow: "0 28px 70px rgba(0, 0, 0, 0.28)",
+          transition: "border-color 180ms ease, box-shadow 180ms ease",
+          "&:hover": {
+            borderColor: "#22d3ee",
+            boxShadow: "0 0 0 2px rgba(34, 211, 238, 0.18), 0 28px 70px rgba(0, 0, 0, 0.28)",
+          },
         }}
       >
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
